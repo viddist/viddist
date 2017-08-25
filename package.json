@@ -4,6 +4,7 @@
   "description": "A distributed alternative to YouTube and Popcorn Time",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/viddist/viddist/issues"
   },
-  "homepage": "https://github.com/viddist/viddist#readme"
+  "homepage": "https://github.com/viddist/viddist#readme",
+  "dependencies": {
+    "ipfs-api": "^14.1.2"
+  }
 }
