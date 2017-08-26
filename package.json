@@ -2,9 +2,9 @@
   "name": "viddist",
   "version": "1.0.0",
   "description": "A distributed alternative to YouTube and Popcorn Time",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,5 +22,8 @@
   "homepage": "https://github.com/viddist/viddist#readme",
   "dependencies": {
     "ipfs-api": "^14.1.2"
+  },
+  "devDependencies": {
+    "electron": "^1.7.5"
   }
 }
