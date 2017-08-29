@@ -1,7 +1,24 @@
-const ipfsAPI = require('ipfs-api');
+const ipfsd = require('ipfsd-ctl')
 
-const ipfs = ipfsAPI('/ip4/127.0.0.1/tcp/5001');
+console.log('running');
 
-ipfs.pin.ls().then(text => {
-    console.log(text);
+ipfsd.disposableApi((err, ipfs) => {
+    if (err !== null) {
+        console.log('err:', err)
+        process.exit();
+    }
+
+    ipfs.id(function (err, id) {
+        console.log(id);
+    });
+
+    ipfs.pin.ls({'type': 'recursive'}).then(items => {
+        for (var hash in items) {
+            ipfs.pin.rm(hash, {'recursive': true}).then((err, unpinned) => {
+                console.log('err:', err)
+                console.log('unpinned:', unpinned)
+            })
+            console.log('hash', hash);
+        }
+    });
 });
