@@ -1,26 +1,23 @@
 const ipfsd = require('ipfsd-ctl')
 
-console.log('running');
+console.log('running')
 
-ipfsd.local((err, ipfs) => {
+ipfsd.disposableApi((err, ipfs) => {
     if (err) { throw err }
 
-    //console.log(ipfs)
-    console.log(ipfs.apiAddr)
-    console.log(ipfs.gatewayAddr)
+    ipfs.id(function (err, id) {
+        if (err) { throw err }
+        console.log(id)
+    })
 
-    //ipfs.id(function (err, id) {
-    //    if (err) { throw err }
-    //    console.log(id);
-    //});
-
-    //ipfs.pin.ls({'type': 'recursive'}).then(items => {
-    //    for (var hash in items) {
-    //        ipfs.pin.rm(hash, {'recursive': true}).then((err, unpinned) => {
-    //            if (err) { throw err }
-    //            console.log('unpinned:', unpinned)
-    //        })
-    //        console.log('hash', hash);
-    //    }
-    //});
-});
+    ipfs.pin.ls({'type': 'recursive'}).then(items => {
+        for (var hash in items) {
+            ipfs.pin.rm(hash, {'recursive': true}).then(unpinned => {
+                if (err) { throw err }
+                console.log('unpinned:', unpinned)
+            })
+            .catch(err => console.error(err) )
+            console.log('hash', hash)
+        }
+    })
+})
