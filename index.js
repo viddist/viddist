@@ -12,14 +12,12 @@ const imgHash = 'QmZZbDoceKrFmjAYKeL4WfkBvexvzpff6yZTga2W8qoUF2'
 ipfsd.disposableApi((err, ipfs) => {
     if (err) { console.error(err) }
 
-    //ipfs.id(function (err, id) {
-    //    if (err) { console.error(err) }
-    //    console.log(id)
-    //})
+    ipfs.id(function (err, id) {
+        if (err) { console.error(err) }
+        console.log(id)
+    })
 
-    ipfs.files.cat(textHash).then(stream => {
-        if (err) { console.error(err); return }
-
+    ipfs.files.cat(textHash).then(stream =>
         stream
             .pipe(bl((err, data) => {
                 if (err) { console.error(err) }
@@ -29,23 +27,24 @@ ipfsd.disposableApi((err, ipfs) => {
                 document.getElementById('content').innerHTML = text
             }))
             .on('error', e => console.error(e) )
-    })
+    )
     .catch((err) => { console.error(err) })
 
-    //ipfs.files.cat(imgHash).then((err, stream) => {
-    //    if (err) { throw err }
-    //    console.log(stream)
+    ipfs.files.cat(imgHash).then(stream =>
+        stream
+            .pipe(bl((err, data) => {
+                if (err) { console.error(err) }
+                console.log(data)
 
-    //    stream
-    //        .pipe(bl((err, data) => {
-    //            if (err) { console.error(err) }
-    //            console.log(data)
-    //        }))
-    //        .catch((reason) => {
-    //            console.error(reason)
-    //        })
-    //})
-    //.catch((reason) => {
-    //    console.error(reason)
-    //})
+                const blob = new Blob([new Uint8Array(data)],
+                    { type: "image/jpeg" } )
+                const imageUrl = window.URL.createObjectURL(blob)
+                const imgElem = document.createElement('img')
+                imgElem.src = imageUrl
+                document.getElementById('content')
+                    .appendChild(imgElem)
+            }))
+            .on('error', e => console.error(e) )
+    )
+    .catch((err) => { console.error(err) })
 })
