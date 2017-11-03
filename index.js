@@ -25,25 +25,7 @@ ipfsd.disposableApi((err, ipfs) => {
 
     insertIpfsFile(ipfs, 'imgContent', 'png', imgHash)
 
-    //insertIpfsFile(ipfs, 'vidContent', 'mp4', vidHash)
-
-    //ipfs.files.cat(vidHash).then(stream =>
-    //    stream
-    //        .pipe(bl((err, data) => {
-    //            if (err) { console.error(err) }
-    //            console.log(data)
-
-    //            const blob = new Blob([new Uint8Array(data)],
-    //                { type: "video/mp4" } )
-    //            const vidUrl = window.URL.createObjectURL(blob)
-    //            const srcElem = document.createElement('source')
-    //            srcElem.src = vidUrl
-    //            document.getElementById('vid')
-    //                .appendChild(srcElem)
-    //        }))
-    //        .on('error', e => console.error(e) )
-    //)
-    //.catch((err) => { console.error(err) })
+    insertIpfsFile(ipfs, 'vidContent', 'mp4', vidHash)
 })
 
 const insertIpfsFile = (ipfs, domId, type, hash) => {
@@ -66,13 +48,11 @@ const insertIpfsFile = (ipfs, domId, type, hash) => {
                 } else if (type === 'mp4') {
                     const blob = new Blob([new Uint8Array(data)],
                         { type: 'video/mp4' } )
-                    const vidUrl = window.URL.createObjectURL(blob)
                     const vidElem = document.createElement('video')
-                    vidElem.controls = ''
-                    const srcElem = document.createElement('source')
-                    srcElem.src = vidUrl
+                    vidElem.controls = true
+                    vidElem.autoplay = true
+                    vidElem.src = window.URL.createObjectURL(blob)
                     document.getElementById(domId).appendChild(vidElem)
-                    vidElem.appendChild(srcElem)
                 } else {
                     console.error('Unsupported content type')
                 }
