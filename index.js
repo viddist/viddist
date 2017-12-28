@@ -30,34 +30,31 @@ ipfsd.disposableApi((err, ipfs) => {
 
 const insertIpfsFile = (ipfs, domId, type, hash) => {
     ipfs.files.cat(hash).then(stream =>
-        stream
-            .pipe(bl((err, data) => {
-                if (err) { console.error(err) }
+        stream.pipe(bl((err, data) => {
+            if (err) { console.error(err) }
 
-                if (type === 'text') {
-                    const text = data.toString()
-                    console.log('received text: ', text)
-                    document.getElementById(domId).innerHTML = text
-                } else if (type === 'png') {
-                    const blob = new Blob([new Uint8Array(data)],
-                        { type: 'image/png' } )
-                    const imageUrl = window.URL.createObjectURL(blob)
-                    const imgElem = document.createElement('img')
-                    imgElem.src = imageUrl
-                    document.getElementById(domId).appendChild(imgElem)
-                } else if (type === 'mp4') {
-                    const blob = new Blob([new Uint8Array(data)],
-                        { type: 'video/mp4' } )
-                    const vidElem = document.createElement('video')
-                    vidElem.controls = true
-                    vidElem.autoplay = true
-                    vidElem.src = window.URL.createObjectURL(blob)
-                    document.getElementById(domId).appendChild(vidElem)
-                } else {
-                    console.error('Unsupported content type')
-                }
-            }))
-            .on('error', e => console.error(e) )
-    )
-        .catch((err) => { console.error(err) })
+            if (type === 'text') {
+                const text = data.toString()
+                console.log('received text: ', text)
+                document.getElementById(domId).innerHTML = text
+            } else if (type === 'png') {
+                const blob = new Blob([new Uint8Array(data)],
+                    { type: 'image/png' } )
+                const imageUrl = window.URL.createObjectURL(blob)
+                const imgElem = document.createElement('img')
+                imgElem.src = imageUrl
+                document.getElementById(domId).appendChild(imgElem)
+            } else if (type === 'mp4') {
+                const blob = new Blob([new Uint8Array(data)],
+                    { type: 'video/mp4' } )
+                const vidElem = document.createElement('video')
+                vidElem.controls = true
+                vidElem.autoplay = true
+                vidElem.src = window.URL.createObjectURL(blob)
+                document.getElementById(domId).appendChild(vidElem)
+            } else {
+                console.error('Unsupported content type')
+            }
+        })).on('error', console.error)
+    ).catch(console.error)
 }
