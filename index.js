@@ -1,6 +1,5 @@
 const ipfsd = require('ipfsd-ctl')
 //const blobStream = require('blob-stream')
-const bl = require('bl')
 
 console.log('running')
 
@@ -29,9 +28,7 @@ ipfsd.disposableApi((err, ipfs) => {
 })
 
 const insertIpfsFile = (ipfs, domId, type, hash) => {
-    ipfs.files.catReadableStream(hash).pipe(bl((err, data) => {
-        if (err) { console.error(err) }
-
+    ipfs.files.cat(hash).then(data => {
         if (type === 'text') {
             const text = data.toString()
             console.log('received text: ', text)
@@ -54,5 +51,5 @@ const insertIpfsFile = (ipfs, domId, type, hash) => {
         } else {
             console.error('Unsupported content type')
         }
-    })).on('error', console.error)
+    }).catch(console.error)
 }
