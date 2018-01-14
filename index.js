@@ -37,14 +37,14 @@ const insertIpfsFile = (ipfs, domId, type, hash) => {
             console.log('received text: ', text)
             document.getElementById(domId).innerHTML = text
         } else if (type === 'png') {
-            const blob = new Blob([new Uint8Array(data)],
+            const blob = new Blob([data],
                 { type: 'image/png' } )
             const imageUrl = window.URL.createObjectURL(blob)
             const imgElem = document.createElement('img')
             imgElem.src = imageUrl
             document.getElementById(domId).appendChild(imgElem)
         } else if (type === 'mp4') {
-            const blob = new Blob([new Uint8Array(data)],
+            const blob = new Blob([data],
                 { type: 'video/mp4' } )
             const vidElem = document.createElement('video')
             vidElem.controls = true
