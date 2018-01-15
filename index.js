@@ -21,7 +21,7 @@ ipfsd.disposableApi((err, ipfs) => {
         console.log(id)
     })
 
-    //insertIpfsFile(ipfs, 'textContent', 'text', textHash)
+    insertIpfsFile(ipfs, 'textContent', 'text', textHash)
 
     //insertIpfsFile(ipfs, 'imgContent', 'png', imgHash)
 
@@ -41,24 +41,25 @@ const insertIpfsFile = (ipfs, domId, type, hash) => {
     //    const imgElem = document.createElement('img')
     //    imgElem.src = imageUrl
     //    document.getElementById(domId).appendChild(imgElem)
-    //} else if (type === 'mp4') {
-    //    const blob = new Blob([data],
-    //        { type: 'video/mp4' } )
-    //    const vidElem = document.createElement('video')
-    //    vidElem.controls = true
-    //    vidElem.autoplay = true
-    //    vidElem.src = window.URL.createObjectURL(blob)
-    //    document.getElementById(domId).appendChild(vidElem)
-    //} else if (type === 'mp4stream') {
-    //
-    } else {
-        renderMedia.render({
+    } else if (type === 'mp4') {
+        //const blob = new Blob([data],
+        //    { type: 'video/mp4' } )
+        //const vidElem = document.createElement('video')
+        //vidElem.controls = true
+        //vidElem.autoplay = true
+        //vidElem.src = window.URL.createObjectURL(blob)
+        //document.getElementById(domId).appendChild(vidElem)
+        renderMedia.append({
             name: 'video.mp4',
             createReadStream: (opts) => {
                 if(opts) console.log("Opts: " + opts)
+                console.log("rendering")
                 return stream
             }},
-            {maxBlobLength: 1000 * 1000},
-            domId)
+            document.getElementById(domId),
+            //{maxBlobLength: 1000 * 1000},
+            (err, elem) => console.log("nice"))
+    } else {
+        console.error("This isn't supposed to happen")
     }
 }
