@@ -1,5 +1,6 @@
 const ipfsd = require('ipfsd-ctl')
 //const blobStream = require('blob-stream')
+const renderMedia = require('render-media')
 
 console.log('running')
 
@@ -20,36 +21,44 @@ ipfsd.disposableApi((err, ipfs) => {
         console.log(id)
     })
 
-    insertIpfsFile(ipfs, 'textContent', 'text', textHash)
+    //insertIpfsFile(ipfs, 'textContent', 'text', textHash)
 
-    insertIpfsFile(ipfs, 'imgContent', 'png', imgHash)
+    //insertIpfsFile(ipfs, 'imgContent', 'png', imgHash)
 
     insertIpfsFile(ipfs, 'vidContent', 'mp4', vidHash)
 })
 
 const insertIpfsFile = (ipfs, domId, type, hash) => {
-    ipfs.files.cat(hash).then(data => {
-        if (type === 'text') {
-            const text = data.toString()
-            console.log('received text: ', text)
-            document.getElementById(domId).innerHTML = text
-        } else if (type === 'png') {
-            const blob = new Blob([data],
-                { type: 'image/png' } )
-            const imageUrl = window.URL.createObjectURL(blob)
-            const imgElem = document.createElement('img')
-            imgElem.src = imageUrl
-            document.getElementById(domId).appendChild(imgElem)
-        } else if (type === 'mp4') {
-            const blob = new Blob([data],
-                { type: 'video/mp4' } )
-            const vidElem = document.createElement('video')
-            vidElem.controls = true
-            vidElem.autoplay = true
-            vidElem.src = window.URL.createObjectURL(blob)
-            document.getElementById(domId).appendChild(vidElem)
-        } else {
-            console.error('Unsupported content type')
-        }
-    }).catch(console.error)
+    const stream = ipfs.files.catReadableStream(hash)
+    if (type === 'text') {
+        const text = stream.toString()
+        console.log('received text: ', text)
+        document.getElementById(domId).innerHTML = text
+    //} else if (type === 'png') {
+    //    const blob = new Blob([data],
+    //        { type: 'image/png' } )
+    //    const imageUrl = window.URL.createObjectURL(blob)
+    //    const imgElem = document.createElement('img')
+    //    imgElem.src = imageUrl
+    //    document.getElementById(domId).appendChild(imgElem)
+    //} else if (type === 'mp4') {
+    //    const blob = new Blob([data],
+    //        { type: 'video/mp4' } )
+    //    const vidElem = document.createElement('video')
+    //    vidElem.controls = true
+    //    vidElem.autoplay = true
+    //    vidElem.src = window.URL.createObjectURL(blob)
+    //    document.getElementById(domId).appendChild(vidElem)
+    //} else if (type === 'mp4stream') {
+    //
+    } else {
+        renderMedia.render({
+            name: 'video.mp4',
+            createReadStream: (opts) => {
+                if(opts) console.log("Opts: " + opts)
+                return stream
+            }},
+            {maxBlobLength: 1000 * 1000},
+            domId)
+    }
 }
