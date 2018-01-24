@@ -10,6 +10,8 @@ const imgHash = 'QmZZbDoceKrFmjAYKeL4WfkBvexvzpff6yZTga2W8qoUF2'
 const imgDirHash = 'QmYGVR5U4EmqZxoLQnMqRdG2nZ25PrATBCcJJaXLiQH6Ta'
 // Sintel with subtitles 130MB
 const vidHash = 'QmXgfYJiG3JttNqVHERfGysc1semSrFnhtAiFU1C6oLNWW/Sintel.mp4'
+// Big buck bunny 480p avi transcoded to mp4 using handbrake
+//const vidHash =
 
 daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
     if (err) { console.error(err) }
