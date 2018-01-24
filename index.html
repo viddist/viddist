@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <title>Viddist</title>
     <link rel="stylesheet" href="index.css">
-    <script src="index.js"></script>
   </head>
   <body>
     <h1>Viddist</h1>
     We are using node <script>document.write(process.versions.node)</script>,
     Chrome <script>document.write(process.versions.chrome)</script>,
     and Electron <script>document.write(process.versions.electron)</script>.
-    <form>
+    <form id="video-address-form">
       <div>
         <label>Video address</label>
         <input id="video-address" type="text">
@@ -22,4 +21,5 @@
     <div id="imgContent"></div>
     <div id="vidContent"></div>
   </body>
+  <script src="index.js"></script>
 </html>

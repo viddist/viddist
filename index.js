@@ -55,3 +55,10 @@ const insertIpfsFile = (ipfs, domId, type, hash) => {
         }
     }).catch(console.error)
 }
+
+document.getElementById('video-address-form')
+    .addEventListener('submit', (e) => {
+        e.preventDefault()
+        console.log("Address: " +
+            document.getElementById('video-address').value)
+})
