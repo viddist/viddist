@@ -1,4 +1,4 @@
-const daemonFactory = require('ipfsd-ctl').create()
+const daemonFactory = require('ipfsd-ctl').create({type: 'go'})
 
 console.log('running')
 
