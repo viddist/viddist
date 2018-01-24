@@ -1,5 +1,4 @@
-const ipfsd = require('ipfsd-ctl')
-//const blobStream = require('blob-stream')
+const daemonFactory = require('ipfsd-ctl').create()
 
 console.log('running')
 
@@ -12,8 +11,9 @@ const imgDirHash = 'QmYGVR5U4EmqZxoLQnMqRdG2nZ25PrATBCcJJaXLiQH6Ta'
 // Sintel with subtitles 130MB
 const vidHash = 'QmXgfYJiG3JttNqVHERfGysc1semSrFnhtAiFU1C6oLNWW/Sintel.mp4'
 
-ipfsd.disposableApi((err, ipfs) => {
+daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
     if (err) { console.error(err) }
+    const ipfs = ipfsd.api
 
     ipfs.id(function (err, id) {
         if (err) { console.error(err) }
