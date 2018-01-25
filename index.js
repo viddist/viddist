@@ -36,6 +36,7 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
             const newVid = document.getElementById('video-address').value
             console.log('Address: ' + newVid)
             insertIpfsFile(ipfs, 'vidContent', 'mp4', newVid)
+            document.getElementById('video-address').value = ''
         })
 })
 
