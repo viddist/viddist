@@ -1,5 +1,3 @@
-const daemonFactory = require('ipfsd-ctl').create({type: 'go'})
-
 console.log('running')
 
 // A text file containing "hello test"
@@ -14,22 +12,6 @@ const imgDirHash = 'QmYGVR5U4EmqZxoLQnMqRdG2nZ25PrATBCcJJaXLiQH6Ta'
 const vidHash = 'QmcPmxZUFNLpwgYcGExARE8ZYgNEr1oSTMTSut1ZhfK6us/sintel-webopt.mp4'
 // Big buck bunny 480p avi transcoded to mp4 webopt using handbrake
 //const vidHash = 'QmNnpS4RXHBMKhTY1s1gHn41xmXiWJEAakmM5uMZ66HfGx/big-buck-bunny-480p-webopt.mp4'
-
-daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
-    if (err) { console.error(err) }
-    const ipfs = ipfsd.api
-
-    ipfs.id(function (err, id) {
-        if (err) { console.error(err) }
-        console.log(id)
-    })
-
-    insertIpfsFile(ipfs, 'textContent', 'text', textHash)
-
-    insertIpfsFile(ipfs, 'imgContent', 'png', imgHash)
-
-    insertIpfsFile(ipfs, 'vidContent', 'mp4', vidHash)
-})
 
 const insertIpfsFile = (ipfs, domId, type, hash) => {
     ipfs.files.cat(hash).then(data => {
@@ -60,7 +42,20 @@ const insertIpfsFile = (ipfs, domId, type, hash) => {
 
 document.getElementById('video-address-form')
     .addEventListener('submit', (e) => {
-        e.preventDefault()
-        console.log("Address: " +
-            document.getElementById('video-address').value)
+    e.preventDefault()
+    console.log("Address: " +
+        document.getElementById('video-address').value)
 })
+
+const ipfs = require('electron').remote.getGlobal('ipfs')
+
+ipfs.id(function (err, id) {
+    if (err) { console.error(err) }
+    console.log(id)
+})
+
+insertIpfsFile(ipfs, 'textContent', 'text', textHash)
+
+insertIpfsFile(ipfs, 'imgContent', 'png', imgHash)
+
+insertIpfsFile(ipfs, 'vidContent', 'mp4', vidHash)

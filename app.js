@@ -2,6 +2,8 @@ const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')
 
+const daemonFactory = require('ipfsd-ctl').create({type: 'go'})
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -32,7 +34,17 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+  //daemonFactory.spawn({init: true, start: true , disposable: false,
+  //  repoPath: './repo/'}, (err, ipfsd) => {
+    daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
+      if (err) { console.error(err) }
+      console.log('ready')
+      global.ipfs = ipfsd.api
+      console.log("repopath: " + ipfsd.repoPath)
+      createWindow()
+  })
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -49,6 +61,10 @@ app.on('activate', () => {
   if (win === null) {
     createWindow()
   }
+})
+
+app.on('quit', () => {
+  console.log('quitting')
 })
 
 // In this file you can include the rest of your app's specific main process
