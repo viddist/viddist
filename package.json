@@ -24,6 +24,6 @@
     "ipfsd-ctl": "^0.27.0"
   },
   "devDependencies": {
-    "electron": "^1.8.2-beta.4"
+    "electron": "^1.7.11"
   }
 }
