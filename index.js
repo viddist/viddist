@@ -7,7 +7,7 @@ const textHash = 'QmRmPLc1FsPAn8F8F9DQDEYADNX5ER2sgqiokEvqnYknVW'
 // The new code@lth logo on fb
 const imgHash = 'QmZZbDoceKrFmjAYKeL4WfkBvexvzpff6yZTga2W8qoUF2'
 // The logo inside a dir, named code.png
-const imgDirHash = 'QmYGVR5U4EmqZxoLQnMqRdG2nZ25PrATBCcJJaXLiQH6Ta'
+//const imgDirHash = 'QmYGVR5U4EmqZxoLQnMqRdG2nZ25PrATBCcJJaXLiQH6Ta'
 // Sintel with subtitles 130MB
 //const vidHash = 'QmXgfYJiG3JttNqVHERfGysc1semSrFnhtAiFU1C6oLNWW/Sintel.mp4'
 // Sintel transcoded to webopt using handbrake
@@ -61,6 +61,6 @@ const insertIpfsFile = (ipfs, domId, type, hash) => {
 document.getElementById('video-address-form')
     .addEventListener('submit', (e) => {
         e.preventDefault()
-        console.log("Address: " +
+        console.log('Address: ' +
             document.getElementById('video-address').value)
-})
+    })
