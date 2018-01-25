@@ -29,6 +29,14 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
     insertIpfsFile(ipfs, 'imgContent', 'png', imgHash)
 
     insertIpfsFile(ipfs, 'vidContent', 'mp4', vidHash)
+
+    document.getElementById('video-address-form')
+        .addEventListener('submit', (e) => {
+            e.preventDefault()
+            const newVid = document.getElementById('video-address').value
+            console.log('Address: ' + newVid)
+            insertIpfsFile(ipfs, 'vidContent', 'mp4', newVid)
+        })
 })
 
 const insertIpfsFile = (ipfs, domId, type, hash) => {
@@ -45,11 +53,13 @@ const insertIpfsFile = (ipfs, domId, type, hash) => {
             imgElem.src = imageUrl
             document.getElementById(domId).appendChild(imgElem)
         } else if (type === 'mp4') {
+            document.getElementById('playing-video').outerHTML = ''
             const blob = new Blob([data],
                 { type: 'video/mp4' } )
             const vidElem = document.createElement('video')
             vidElem.controls = true
             vidElem.autoplay = true
+            vidElem.id = 'playing-video'
             vidElem.src = window.URL.createObjectURL(blob)
             document.getElementById(domId).appendChild(vidElem)
         } else {
@@ -57,10 +67,3 @@ const insertIpfsFile = (ipfs, domId, type, hash) => {
         }
     }).catch(console.error)
 }
-
-document.getElementById('video-address-form')
-    .addEventListener('submit', (e) => {
-        e.preventDefault()
-        console.log('Address: ' +
-            document.getElementById('video-address').value)
-    })
