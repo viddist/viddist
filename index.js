@@ -34,11 +34,27 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
             }
         })
         if (userAddress === '') {
+            // Initialize the user profile key and files if they don't exist
             ipfs.key.gen(userAddressKeyName, {
                 type: 'rsa',
                 size: 2048
             }).then(key => {
                 document.getElementById('user-address').innerText = key.id
+                ipfs.files.add([{
+                    path: '/viddist-meta/viddist-version.txt',
+                    content: Buffer.from('0', 'utf-8')
+                } , {
+                    path:'/viddist-meta/user-profile.json',
+                    content: Buffer.from(JSON.stringify( {test: 'data'} ))
+                }]).then(res => {
+                    // TODO: Pin it too
+                    // Publish the dir
+                    ipfs.name.publish(res[2].hash,
+                        {key: userAddressKeyName}).then(name => {
+                        console.log('Published to profile')
+                        console.log(name)
+                    }).catch(console.error)
+                }).catch(console.error)
             }).catch(console.error)
         }
         document.getElementById('user-address').innerText = userAddress
