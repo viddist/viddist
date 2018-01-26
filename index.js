@@ -15,6 +15,8 @@ const vidHash = 'QmcPmxZUFNLpwgYcGExARE8ZYgNEr1oSTMTSut1ZhfK6us/sintel-webopt.mp
 // Big buck bunny 480p avi transcoded to mp4 webopt using handbrake
 //const vidHash = 'QmNnpS4RXHBMKhTY1s1gHn41xmXiWJEAakmM5uMZ66HfGx/big-buck-bunny-480p-webopt.mp4'
 
+const userAddressKeyName = 'user-address'
+
 daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
     if (err) { console.error(err) }
     const ipfs = ipfsd.api
@@ -24,6 +26,24 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
         console.log(id)
     })
 
+    ipfs.key.list().then(keys => {
+        let userAddress = ''
+        keys.forEach(key => {
+            if (key.name === userAddressKeyName) {
+                userAddress = key.id
+            }
+        })
+        if (userAddress === '') {
+            ipfs.key.gen(userAddressKeyName, {
+                type: 'rsa',
+                size: 2048
+            }).then(key => {
+                document.getElementById('user-address').innerText = key.id
+            }).catch(console.error)
+        }
+        document.getElementById('user-address').innerText = userAddress
+    }).catch(console.error)
+
     insertIpfsFile(ipfs, 'textContent', 'text', textHash)
 
     insertIpfsFile(ipfs, 'imgContent', 'png', imgHash)
@@ -31,7 +51,7 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
     insertIpfsFile(ipfs, 'vidContent', 'mp4', vidHash)
 
     document.getElementById('video-address-form')
-        .addEventListener('submit', (e) => {
+        .addEventListener('submit', e => {
             e.preventDefault()
             const newVid = document.getElementById('video-address').value
             console.log('Address: ' + newVid)
