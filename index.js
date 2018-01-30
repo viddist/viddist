@@ -82,12 +82,13 @@ const initUserProfile = ipfs => {
                 content: Buffer.from(JSON.stringify( {test: 'data'} ))
             }])
         }).then(res => {
-            // TODO: Pin it too (do it in parallel (woa))
-            // Publish the dir
-            return ipfs.name.publish(res[2].hash, {key: userAddressKeyName})
-        }).then(name => {
+            return Promise.all([
+                ipfs.pin.add(res[2]).hash,
+                ipfs.name.publish(res[2].hash, {key: userAddressKeyName})
+            ])
+        }).then(res => {
             console.log('Published to profile')
-            console.log(name)
+            console.log(res[1])
         }).catch(console.error)
     }).catch(console.error)
 }
