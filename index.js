@@ -25,13 +25,27 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
 
     playVideo(ipfs, vidHash)
 
+    document.getElementById('other-user-address-form')
+        .addEventListener('submit', e => {
+            e.preventDefault()
+            const otherUserId = document
+                .getElementById('other-user-address').value
+            const userProfileFile = otherUserId + '/user-profile.json'
+            ipfs.name.resolve(userProfileFile).then(address => {
+                return ipfs.files.cat(address)
+            }).then(data => {
+                document.getElementById('other-user-profile').innerText =
+                    data.toString()
+            }).catch(console.error)
+        })
+
     document.getElementById('video-address-form')
         .addEventListener('submit', e => {
             e.preventDefault()
             const newVid = document.getElementById('video-address').value
             console.log('Address: ' + newVid)
             playVideo(ipfs, newVid)
-            document.getElementById('video-address').value = ''
+            document.getElementById('new-video-address').value = ''
         })
 })
 
