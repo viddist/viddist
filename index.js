@@ -82,9 +82,10 @@ const initUserProfile = ipfs => {
                 content: Buffer.from(JSON.stringify( {test: 'data'} ))
             }])
         }).then(res => {
+            const dirHash = res[2].hash // This has worked so far but watch out
             return Promise.all([
-                ipfs.pin.add(res[2]).hash,
-                ipfs.name.publish(res[2].hash, {key: userAddressKeyName})
+                ipfs.pin.add(dirHash).hash,
+                ipfs.name.publish(dirHash, {key: userAddressKeyName})
             ])
         }).then(res => {
             console.log('Published to profile')
