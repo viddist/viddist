@@ -1,3 +1,7 @@
-img {
-    height: 100px;
+#header-logo {
+    font-size: 50px;
+}
+
+#header-logo img {
+    height: 1em;
 }
