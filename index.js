@@ -16,10 +16,9 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
     if (err) { console.error(err) }
     const ipfs = ipfsd.api
 
-    ipfs.id(function (err, id) {
-        if (err) { console.error(err) }
+    ipfs.id().then(id => {
         console.log(id)
-    })
+    }).catch(console.error)
 
     initUserProfile(ipfs)
 
