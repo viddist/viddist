@@ -25,33 +25,31 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
 
     playVideo(ipfs, vidHash)
 
-    document.getElementById('other-user-address-form')
-        .addEventListener('submit', e => {
-            e.preventDefault()
-            const otherUserId = document
-                .getElementById('other-user-address').value
-            const userProfileFile = otherUserId + '/user-profile.json'
-            ipfs.name.resolve(userProfileFile).then(address => {
-                return ipfs.files.cat(address)
-            }).then(data => {
-                document.getElementById('other-user-profile').innerText =
-                    data.toString()
-            }).catch(console.error)
-        })
+    byId('other-user-address-form').addEventListener('submit', e => {
+        e.preventDefault()
+        const otherUserId = byId('other-user-address').value
+        const userProfileFile = otherUserId + '/user-profile.json'
+        ipfs.name.resolve(userProfileFile).then(address => {
+            return ipfs.files.cat(address)
+        }).then(data => {
+            byId('other-user-profile').innerText = data.toString()
+        }).catch(console.error)
+    })
 
-    document.getElementById('video-address-form')
-        .addEventListener('submit', e => {
-            e.preventDefault()
-            const newVid = document.getElementById('video-address').value
-            console.log('Address: ' + newVid)
-            playVideo(ipfs, newVid)
-            document.getElementById('new-video-address').value = ''
-        })
+    byId('video-address-form').addEventListener('submit', e => {
+        e.preventDefault()
+        const newVid = byId('video-address').value
+        console.log('Address: ' + newVid)
+        playVideo(ipfs, newVid)
+        byId('new-video-address').value = ''
+    })
 })
+
+const byId = id => document.getElementById(id)
 
 const playVideo = (ipfs, hash) => {
     ipfs.files.cat(hash).then(data => {
-        document.getElementById('playing-video').outerHTML = ''
+        byId('playing-video').outerHTML = ''
         const blob = new Blob([data],
             { type: 'video/mp4' } )
         const vidElem = document.createElement('video')
@@ -59,7 +57,7 @@ const playVideo = (ipfs, hash) => {
         vidElem.autoplay = true
         vidElem.id = 'playing-video'
         vidElem.src = window.URL.createObjectURL(blob)
-        document.getElementById('vidContent').appendChild(vidElem)
+        byId('vidContent').appendChild(vidElem)
     }).catch(console.error)
 }
 
@@ -78,7 +76,7 @@ const initUserProfile = ipfs => {
                 type: 'rsa',
                 size: 2048
             }).then(key => {
-                document.getElementById('user-address').innerText = key.id
+                byId('user-address').innerText = key.id
                 ipfs.files.add([{
                     path: '/viddist-meta/viddist-version.txt',
                     content: Buffer.from(protocolVersion, 'utf-8')
@@ -96,6 +94,6 @@ const initUserProfile = ipfs => {
                 }).catch(console.error)
             }).catch(console.error)
         }
-        document.getElementById('user-address').innerText = userAddress
+        byId('user-address').innerText = userAddress
     }).catch(console.error)
 }
