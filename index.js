@@ -61,38 +61,33 @@ const playVideo = (ipfs, hash) => {
 }
 
 const initUserProfile = ipfs => {
-    // TODO: I'm bad at promises but this has to be improved
     ipfs.key.list().then(keys => {
-        let userAddress = ''
         keys.forEach(key => {
             if (key.name === userAddressKeyName) {
-                userAddress = key.id
+                byId('user-address').innerText = key.id
+                return Promise.resolve()
             }
         })
-        if (userAddress === '') {
-            // Initialize the user profile key and files if they don't exist
-            ipfs.key.gen(userAddressKeyName, {
-                type: 'rsa',
-                size: 2048
-            }).then(key => {
-                byId('user-address').innerText = key.id
-                ipfs.files.add([{
-                    path: '/viddist-meta/viddist-version.txt',
-                    content: Buffer.from(protocolVersion, 'utf-8')
-                } , {
-                    path:'/viddist-meta/user-profile.json',
-                    content: Buffer.from(JSON.stringify( {test: 'data'} ))
-                }]).then(res => {
-                    // TODO: Pin it too
-                    // Publish the dir
-                    ipfs.name.publish(res[2].hash,
-                        {key: userAddressKeyName}).then(name => {
-                        console.log('Published to profile')
-                        console.log(name)
-                    }).catch(console.error)
-                }).catch(console.error)
-            }).catch(console.error)
-        }
-        byId('user-address').innerText = userAddress
+        // Initialize the user profile key and files if they don't exist
+        ipfs.key.gen(userAddressKeyName, {
+            type: 'rsa',
+            size: 2048
+        }).then(key => {
+            byId('user-address').innerText = key.id
+            return ipfs.files.add([{
+                path: '/viddist-meta/viddist-version.txt',
+                content: Buffer.from(protocolVersion, 'utf-8')
+            } , { // I love that ESLint doesn't complain about anything here
+                path:'/viddist-meta/user-profile.json',
+                content: Buffer.from(JSON.stringify( {test: 'data'} ))
+            }])
+        }).then(res => {
+            // TODO: Pin it too (do it in parallel (woa))
+            // Publish the dir
+            return ipfs.name.publish(res[2].hash, {key: userAddressKeyName})
+        }).then(name => {
+            console.log('Published to profile')
+            console.log(name)
+        }).catch(console.error)
     }).catch(console.error)
 }
