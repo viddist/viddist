@@ -15,6 +15,7 @@ const vidHash = 'QmcPmxZUFNLpwgYcGExARE8ZYgNEr1oSTMTSut1ZhfK6us/sintel-webopt.mp
 // Big buck bunny 480p avi transcoded to mp4 webopt using handbrake
 //const vidHash = 'QmNnpS4RXHBMKhTY1s1gHn41xmXiWJEAakmM5uMZ66HfGx/big-buck-bunny-480p-webopt.mp4'
 
+const protocolVersion = '1'
 const userAddressKeyName = 'user-address'
 
 daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
@@ -26,39 +27,7 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
         console.log(id)
     })
 
-    ipfs.key.list().then(keys => {
-        let userAddress = ''
-        keys.forEach(key => {
-            if (key.name === userAddressKeyName) {
-                userAddress = key.id
-            }
-        })
-        if (userAddress === '') {
-            // Initialize the user profile key and files if they don't exist
-            ipfs.key.gen(userAddressKeyName, {
-                type: 'rsa',
-                size: 2048
-            }).then(key => {
-                document.getElementById('user-address').innerText = key.id
-                ipfs.files.add([{
-                    path: '/viddist-meta/viddist-version.txt',
-                    content: Buffer.from('0', 'utf-8')
-                } , {
-                    path:'/viddist-meta/user-profile.json',
-                    content: Buffer.from(JSON.stringify( {test: 'data'} ))
-                }]).then(res => {
-                    // TODO: Pin it too
-                    // Publish the dir
-                    ipfs.name.publish(res[2].hash,
-                        {key: userAddressKeyName}).then(name => {
-                        console.log('Published to profile')
-                        console.log(name)
-                    }).catch(console.error)
-                }).catch(console.error)
-            }).catch(console.error)
-        }
-        document.getElementById('user-address').innerText = userAddress
-    }).catch(console.error)
+    initUserProfile(ipfs)
 
     insertIpfsFile(ipfs, 'textContent', 'text', textHash)
 
@@ -102,5 +71,42 @@ const insertIpfsFile = (ipfs, domId, type, hash) => {
         } else {
             console.error('Unsupported content type')
         }
+    }).catch(console.error)
+}
+
+const initUserProfile = ipfs => {
+    // TODO: I'm bad at promises but this has to be improved
+    ipfs.key.list().then(keys => {
+        let userAddress = ''
+        keys.forEach(key => {
+            if (key.name === userAddressKeyName) {
+                userAddress = key.id
+            }
+        })
+        if (userAddress === '') {
+            // Initialize the user profile key and files if they don't exist
+            ipfs.key.gen(userAddressKeyName, {
+                type: 'rsa',
+                size: 2048
+            }).then(key => {
+                document.getElementById('user-address').innerText = key.id
+                ipfs.files.add([{
+                    path: '/viddist-meta/viddist-version.txt',
+                    content: Buffer.from(protocolVersion, 'utf-8')
+                } , {
+                    path:'/viddist-meta/user-profile.json',
+                    content: Buffer.from(JSON.stringify( {test: 'data'} ))
+                }]).then(res => {
+                    // TODO: Pin it too
+                    // Publish the dir
+                    ipfs.name.publish(res[2].hash,
+                        {key: userAddressKeyName}).then(name => {
+                        console.log('Published to profile')
+                        console.log(name)
+                    }).catch(console.error)
+                }).catch(console.error)
+            }).catch(console.error)
+        }
+        document.getElementById('user-address').innerText = userAddress
     }).catch(console.error)
 }
