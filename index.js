@@ -70,12 +70,16 @@ const playVideo = (ipfs, hash) => {
 
 const initUserProfile = ipfs => {
     ipfs.key.list().then(keys => {
+        let alreadyInited = false
         keys.forEach(key => {
             if (key.name === userAddressKeyName) {
                 byId('user-address').innerText = key.id
-                return Promise.resolve()
+                alreadyInited = true
             }
         })
+        if (alreadyInited) {
+            return Promise.resolve()
+        }
         // Initialize the user profile key and files if they don't exist
         ipfs.key.gen(userAddressKeyName, {
             type: 'rsa',
