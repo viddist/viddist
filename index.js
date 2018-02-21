@@ -1,3 +1,4 @@
+'use strict'
 const daemonFactory = require('ipfsd-ctl').create({type: 'go'})
 
 console.log('running')
