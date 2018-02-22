@@ -1,7 +1,11 @@
 #header-logo {
-    font-size: 50px;
+    font-size: 32px;
 }
 
 #header-logo img {
     height: 1em;
+}
+
+#logo {
+    display: inline-block;
 }
