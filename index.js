@@ -20,16 +20,17 @@ const vidHash = 'QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp
 
 const protocolVersion = '1'
 const userAddressKeyName = 'user-address'
+let ipfs
 
 daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
     if (err) { console.error(err) }
-    const ipfs = ipfsd.api
+    ipfs = ipfsd.api
 
     ipfs.id().then(console.log).catch(console.error)
 
-    initUserProfile(ipfs)
+    initUserProfile()
 
-    playVideo(ipfs, vidHash)
+    playVideo(vidHash)
 
     byId('other-user-address-form').addEventListener('submit', e => {
         e.preventDefault()
@@ -46,14 +47,14 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
         e.preventDefault()
         const newVid = byId('new-video-address').value
         console.log('Address: ' + newVid)
-        playVideo(ipfs, newVid)
+        playVideo(newVid)
         byId('new-video-address').value = ''
     })
 })
 
 const byId = id => document.getElementById(id)
 
-const playVideo = (ipfs, hash) => {
+const playVideo = hash => {
     ipfs.files.cat(hash).then(data => {
         byId('playing-video').outerHTML = ''
         const blob = new Blob([data],
@@ -67,7 +68,7 @@ const playVideo = (ipfs, hash) => {
     }).catch(console.error)
 }
 
-const initUserProfile = ipfs => {
+const initUserProfile = () => {
     ipfs.key.list().then(keys => {
         let alreadyInited = false
         keys.forEach(key => {
@@ -85,17 +86,13 @@ const initUserProfile = ipfs => {
             size: 2048
         }).then(key => {
             byId('user-address').innerText = key.id
-            return ipfs.files.add([{
-                path: '/viddist-meta/viddist-version.txt',
-                content: Buffer.from(protocolVersion, 'utf-8')
-            } , { // I love that ESLint doesn't complain about anything here
-                path:'/viddist-meta/user-profile.json',
-                content: Buffer.from(JSON.stringify( {test: 'data'} ))
-            }])
+            return addUserProfile({
+                userName: 'Viddist ~ö~ User',
+                pinnedVids: [] })
         }).then(res => {
             const dirHash = res[2].hash // This has worked so far but watch out
             return Promise.all([
-                ipfs.pin.add(dirHash).hash,
+                ipfs.pin.add(dirHash, {recursive: true}).hash,
                 ipfs.name.publish(dirHash, {key: userAddressKeyName})
             ])
         }).then(res => {
@@ -104,3 +101,15 @@ const initUserProfile = ipfs => {
         }).catch(console.error)
     }).catch(console.error)
 }
+
+const addUserProfile = profile => {
+    return ipfs.files.add([{
+        path: '/viddist-meta/viddist-version.txt',
+        content: Buffer.from(protocolVersion, 'utf-8')
+    } , { // I love that ESLint doesn't complain about anything here
+        path:'/viddist-meta/user-profile.json',
+        content: Buffer.from(JSON.stringify(profile))
+    }])
+}
+
+//const updateUserProfile = 
