@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/viddist/viddist#readme",
   "dependencies": {
-    "ipfsd-ctl": "^0.32.0"
+    "ipfsd-ctl": "^0.32.1"
   },
   "devDependencies": {
     "electron": "^1.8.4"
