@@ -4,7 +4,7 @@
   "description": "A distributed alternative to YouTube and Popcorn Time",
   "main": "app.js",
   "scripts": {
-    "start": "IPFS_EXEC=/usr/bin/ipfs electron .",
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/viddist/viddist#readme",
   "dependencies": {
+    "go-ipfs-dep": "^0.4.14",
     "ipfsd-ctl": "^0.32.1"
   },
   "devDependencies": {
