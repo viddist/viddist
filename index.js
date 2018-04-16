@@ -62,6 +62,7 @@ const playVideo = hash => {
         const vidElem = document.createElement('video')
         vidElem.controls = true
         vidElem.autoplay = true
+        vidElem.muted = true
         vidElem.id = 'playing-video'
         vidElem.src = window.URL.createObjectURL(blob)
         byId('vidContent').appendChild(vidElem)
