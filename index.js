@@ -26,6 +26,8 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
   if (err) { console.error(err) }
   ipfs = ipfsd.api
 
+  console.log('Started ipfs')
+
   ipfs.id().then(console.log).catch(console.error)
 
   initUserProfile()
