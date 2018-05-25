@@ -22,17 +22,9 @@ const protocolVersion = '1'
 const userAddressKeyName = 'user-address'
 let ipfs
 
-daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
+daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   if (err) { console.error(err) }
   ipfs = ipfsd.api
-
-  console.log('Started ipfs')
-
-  ipfs.id().then(console.log).catch(console.error)
-
-  initUserProfile()
-
-  playVideo(vidHash)
 
   byId('other-user-address-form').addEventListener('submit', e => {
     e.preventDefault()
@@ -45,18 +37,26 @@ daemonFactory.spawn({disposable: true}, (err, ipfsd) => {
     }).catch(console.error)
   })
 
-  byId('video-address-form').addEventListener('submit', e => {
+  byId('video-address-form').addEventListener('submit', async e => {
     e.preventDefault()
     const newVid = byId('new-video-address').value
     console.log('Address: ' + newVid)
-    playVideo(newVid)
     byId('new-video-address').value = ''
+    await playVideo(newVid)
   })
+
+  console.log('Started ipfs')
+
+  console.log(await ipfs.id())
+
+  await initUserProfile()
+
+  await playVideo(vidHash)
 })
 
 const byId = id => document.getElementById(id)
 
-const playVideo = hash => {
+const playVideo = async hash => {
   ipfs.files.cat(hash).then(data => {
     byId('playing-video').outerHTML = ''
     const blob = new window.Blob([data],
@@ -71,7 +71,7 @@ const playVideo = hash => {
   }).catch(console.error)
 }
 
-const initUserProfile = () => {
+const initUserProfile = async () => {
   ipfs.key.list().then(keys => {
     let alreadyInited = false
     keys.forEach(key => {
