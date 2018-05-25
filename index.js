@@ -59,8 +59,7 @@ const byId = id => document.getElementById(id)
 const playVideo = async hash => {
   const data = await ipfs.files.cat(hash)
   byId('playing-video').outerHTML = ''
-  const blob = new window.Blob([data],
-    { type: 'video/mp4' })
+  const blob = new window.Blob([data], { type: 'video/mp4' })
   const vidElem = document.createElement('video')
   vidElem.controls = true
   vidElem.autoplay = true
@@ -84,13 +83,12 @@ const initUserProfile = async () => {
   }
   // Initialize the user profile key and files if they don't exist
   const key = await ipfs.key.gen(userAddressKeyName, {
-    type: 'rsa',
-    size: 2048
+    type: 'rsa', size: 2048
   })
   byId('user-address').innerText = key.id
   const addRes = await addUserProfile({
-    userName: 'Viddist ~ö~ User',
-    pinnedVids: [] })
+    userName: 'Viddist ~ö~ User', pinnedVids: []
+  })
   // This has worked so far but watch out. Should probably run stat instead
   const dirHash = addRes[2].hash
   const publishRes = await Promise.all([
