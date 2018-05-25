@@ -72,37 +72,33 @@ const playVideo = async hash => {
 }
 
 const initUserProfile = async () => {
-  ipfs.key.list().then(keys => {
-    let alreadyInited = false
-    keys.forEach(key => {
-      if (key.name === userAddressKeyName) {
-        byId('user-address').innerText = key.id
-        alreadyInited = true
-      }
-    })
-    if (alreadyInited) {
-      return Promise.resolve()
-    }
-    // Initialize the user profile key and files if they don't exist
-    ipfs.key.gen(userAddressKeyName, {
-      type: 'rsa',
-      size: 2048
-    }).then(key => {
+  const keys = await ipfs.key.list()
+  let alreadyInited = false
+  keys.forEach(key => {
+    if (key.name === userAddressKeyName) {
       byId('user-address').innerText = key.id
-      return addUserProfile({
-        userName: 'Viddist ~ö~ User',
-        pinnedVids: [] })
-    }).then(res => {
-      const dirHash = res[2].hash // This has worked so far but watch out
-      return Promise.all([
-        ipfs.pin.add(dirHash, {recursive: true}).hash,
-        ipfs.name.publish(dirHash, {key: userAddressKeyName})
-      ])
-    }).then(res => {
-      console.log('Published to profile')
-      console.log(res[1])
-    }).catch(console.error)
-  }).catch(console.error)
+      alreadyInited = true
+    }
+  })
+  if (alreadyInited) {
+    return Promise.resolve()
+  }
+  // Initialize the user profile key and files if they don't exist
+  const key = await ipfs.key.gen(userAddressKeyName, {
+    type: 'rsa',
+    size: 2048
+  })
+  byId('user-address').innerText = key.id
+  const addRes = await addUserProfile({
+    userName: 'Viddist ~ö~ User',
+    pinnedVids: [] })
+  // This has worked so far but watch out. Should probably run stat instead
+  const dirHash = addRes[2].hash
+  const publishRes = await Promise.all([
+    ipfs.pin.add(dirHash, {recursive: true}).hash,
+    ipfs.name.publish(dirHash, {key: userAddressKeyName})
+  ])
+  console.log('Profile published at:', publishRes[1])
 }
 
 const addUserProfile = profile => {
