@@ -57,18 +57,17 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
 const byId = id => document.getElementById(id)
 
 const playVideo = async hash => {
-  ipfs.files.cat(hash).then(data => {
-    byId('playing-video').outerHTML = ''
-    const blob = new window.Blob([data],
-      { type: 'video/mp4' })
-    const vidElem = document.createElement('video')
-    vidElem.controls = true
-    vidElem.autoplay = true
-    vidElem.muted = true
-    vidElem.id = 'playing-video'
-    vidElem.src = window.URL.createObjectURL(blob)
-    byId('vidContent').appendChild(vidElem)
-  }).catch(console.error)
+  const data = await ipfs.files.cat(hash)
+  byId('playing-video').outerHTML = ''
+  const blob = new window.Blob([data],
+    { type: 'video/mp4' })
+  const vidElem = document.createElement('video')
+  vidElem.controls = true
+  vidElem.autoplay = true
+  vidElem.muted = true
+  vidElem.id = 'playing-video'
+  vidElem.src = window.URL.createObjectURL(blob)
+  byId('vidContent').appendChild(vidElem)
 }
 
 const initUserProfile = async () => {
@@ -101,7 +100,7 @@ const initUserProfile = async () => {
   console.log('Profile published at:', publishRes[1])
 }
 
-const addUserProfile = profile => {
+const addUserProfile = async profile => {
   return ipfs.files.add([{
     path: '/viddist-meta/viddist-version.txt',
     content: Buffer.from(protocolVersion, 'utf-8')
