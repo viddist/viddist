@@ -47,7 +47,7 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
 
   console.log('Started ipfs')
 
-  console.log(await ipfs.id())
+  console.log('ID:', await ipfs.id())
 
   await initUserProfile()
 
@@ -70,32 +70,37 @@ const playVideo = async hash => {
 }
 
 const initUserProfile = async () => {
-  const keys = await ipfs.key.list()
-  let alreadyInited = false
-  keys.forEach(key => {
-    if (key.name === userAddressKeyName) {
-      byId('user-address').innerText = key.id
-      alreadyInited = true
+  try {
+    const keys = await ipfs.key.list()
+    let alreadyInited = false
+    keys.forEach(key => {
+      if (key.name === userAddressKeyName) {
+        byId('user-address').innerText = key.id
+        alreadyInited = true
+      }
+    })
+    if (alreadyInited) {
+      return Promise.resolve()
     }
-  })
-  if (alreadyInited) {
-    return Promise.resolve()
+    // Initialize the user profile key and files if they don't exist
+    const key = await ipfs.key.gen(userAddressKeyName, {
+      type: 'rsa', size: 2048
+    })
+    byId('user-address').innerText = key.id
+    const addRes = await addUserProfile({
+      userName: 'Viddist ~ö~ User', pinnedVids: []
+    })
+    // This has worked so far but watch out. Should probably run stat instead
+    const dirHash = addRes[2].hash
+    const publishRes = await Promise.all([
+      ipfs.pin.add(dirHash, {recursive: true}).hash,
+      ipfs.name.publish(dirHash, {key: userAddressKeyName})
+    ])
+    console.log('Profile published at:', publishRes[1])
+  } catch (error) {
+    console.error('Failed to init user profile')
+    throw error
   }
-  // Initialize the user profile key and files if they don't exist
-  const key = await ipfs.key.gen(userAddressKeyName, {
-    type: 'rsa', size: 2048
-  })
-  byId('user-address').innerText = key.id
-  const addRes = await addUserProfile({
-    userName: 'Viddist ~ö~ User', pinnedVids: []
-  })
-  // This has worked so far but watch out. Should probably run stat instead
-  const dirHash = addRes[2].hash
-  const publishRes = await Promise.all([
-    ipfs.pin.add(dirHash, {recursive: true}).hash,
-    ipfs.name.publish(dirHash, {key: userAddressKeyName})
-  ])
-  console.log('Profile published at:', publishRes[1])
 }
 
 const addUserProfile = async profile => {
