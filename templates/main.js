@@ -1,6 +1,14 @@
 const html = require('choo/html')
 
-module.exports = () /* (state, emit) */ => {
+module.exports = (state, emit) => {
+  const playNewVideo = e => {
+    e.preventDefault()
+    // Can we cleanly avoid getElementById here?
+    const newVid = document.getElementById('new-video-address').value
+    console.log('Address: ' + newVid)
+    emit('playNewVideo', newVid)
+  }
+
   return html`
     <div>
       <div id="header-logo">
@@ -18,7 +26,7 @@ module.exports = () /* (state, emit) */ => {
         </div>
       </form>
       <div id="other-user-profile"></div>
-      <form id="video-address-form">
+      <form id="video-address-form" onsubmit=${playNewVideo}>
         <div>
           <label>Video address</label>
           <input id="new-video-address" type="text">

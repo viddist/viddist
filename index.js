@@ -26,6 +26,12 @@ const userAddressKeyName = 'user-address'
 let ipfs
 const train = choo()
 
+train.use((state, emitter) => {
+  emitter.on('playNewVideo', async newVid => {
+    await playVideo(newVid)
+  })
+})
+
 train.route('/', main)
 
 train.mount('div')
@@ -43,14 +49,6 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
     }).then(data => {
       byId('other-user-profile').innerText = data.toString()
     }).catch(console.error)
-  })
-
-  byId('video-address-form').addEventListener('submit', async e => {
-    e.preventDefault()
-    const newVid = byId('new-video-address').value
-    console.log('Address: ' + newVid)
-    byId('new-video-address').value = ''
-    await playVideo(newVid)
   })
 
   console.log('Started ipfs')
