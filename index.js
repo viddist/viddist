@@ -1,5 +1,8 @@
 'use strict'
 const daemonFactory = require('ipfsd-ctl').create({type: 'go'})
+const choo = require('choo')
+
+const main = require('./templates/main.js')
 
 console.log('running')
 
@@ -21,6 +24,11 @@ const vidHash = 'QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp
 const protocolVersion = '1'
 const userAddressKeyName = 'user-address'
 let ipfs
+const train = choo()
+
+train.route('/', main)
+
+train.mount('div')
 
 daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   if (err) { console.error(err) }
