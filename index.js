@@ -36,7 +36,7 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
 
   console.log('ID:', await ipfs.id())
 
-  train.use((state, emitter) => {
+  train.use(async (state, emitter) => {
     state.myProfileAddress = ''
     state.otherUserProfile = ''
 
@@ -51,15 +51,16 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
     emitter.on('playNewVideo', async newVid => {
       await playVideo(newVid)
     })
+
+    state.myProfileAddress = await initUserProfile()
+    emitter.emit('render')
+
+    await playVideo(vidHash)
   })
 
   train.route('/', main)
 
   train.mount('div')
-
-  await initUserProfile()
-
-  await playVideo(vidHash)
 })
 
 // Refactor out most (all?) uses of this in this file
@@ -80,22 +81,20 @@ const playVideo = async hash => {
 
 const initUserProfile = async () => {
   try {
+    let profile
     const keys = await ipfs.key.list()
-    let alreadyInited = false
     keys.forEach(key => {
       if (key.name === userAddressKeyName) {
-        byId('my-user-address').innerText = key.id
-        alreadyInited = true
+        profile = key.id
       }
     })
-    if (alreadyInited) {
-      return Promise.resolve()
+    if (profile) {
+      return profile
     }
     // Initialize the user profile key and files if they don't exist
     const key = await ipfs.key.gen(userAddressKeyName, {
       type: 'rsa', size: 2048
     })
-    byId('my-user-address').innerText = key.id
     const addRes = await addUserProfile({
       userName: 'Viddist ~ö~ User', pinnedVids: []
     })
@@ -106,6 +105,7 @@ const initUserProfile = async () => {
       ipfs.name.publish(dirHash, {key: userAddressKeyName})
     ])
     console.log('Profile published at:', publishRes[1])
+    return key.id
   } catch (error) {
     console.error('Failed to init user profile')
     throw error

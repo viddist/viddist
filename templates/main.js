@@ -22,7 +22,7 @@ module.exports = (state, emit) => {
         <div id="logo">Viddist</div>
       </div>
       <div>Your user address: 
-        <div id="my-user-address"></div>
+        <div>${state.myProfileAddress}</div>
       </div>
       <form onsubmit=${viewProfile}>
         <div>
