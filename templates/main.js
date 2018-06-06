@@ -39,8 +39,6 @@ module.exports = (state, emit) => {
           <button>Play video</button>
         </div>
       </form>
-      <div id="textContent"></div>
-      <div id="imgContent"></div>
       <div id="vidContent">
         <video id="playing-video"></video>
       </div>
