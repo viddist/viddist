@@ -39,8 +39,9 @@ module.exports = (state, emit) => {
           <button>Play video</button>
         </div>
       </form>
-      <div id="vidContent">
-        <video id="playing-video"></video>
+      <div>
+        <video controls autoplay muted src=${state.videoAddress}>
+        </video>
       </div>
     </div>
   `

@@ -39,6 +39,7 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   train.use(async (state, emitter) => {
     state.myProfileAddress = ''
     state.otherUserProfile = ''
+    state.videoAddress = ''
 
     emitter.on('viewProfile', async userId => {
       const userProfileFile = userId + '/user-profile.json'
@@ -49,33 +50,24 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
     })
 
     emitter.on('playNewVideo', async newVid => {
-      await playVideo(newVid)
+      state.videoAddress = await playVideo(newVid)
+      emitter.emit('render')
     })
 
     state.myProfileAddress = await initUserProfile()
     emitter.emit('render')
 
-    await playVideo(vidHash)
+    emitter.emit('playNewVideo', vidHash)
   })
 
   train.route('/', main)
   train.mount('div')
 })
 
-// Refactor out most (all?) uses of this in this file
-const byId = id => document.getElementById(id)
-
 const playVideo = async hash => {
   const data = await ipfs.files.cat(hash)
-  byId('playing-video').outerHTML = ''
   const blob = new window.Blob([data], { type: 'video/mp4' })
-  const vidElem = document.createElement('video')
-  vidElem.controls = true
-  vidElem.autoplay = true
-  vidElem.muted = true
-  vidElem.id = 'playing-video'
-  vidElem.src = window.URL.createObjectURL(blob)
-  byId('vidContent').appendChild(vidElem)
+  return window.URL.createObjectURL(blob)
 }
 
 const initUserProfile = async () => {
