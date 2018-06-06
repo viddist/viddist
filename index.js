@@ -59,7 +59,6 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   })
 
   train.route('/', main)
-
   train.mount('div')
 })
 
@@ -81,31 +80,31 @@ const playVideo = async hash => {
 
 const initUserProfile = async () => {
   try {
-    let profile
     const keys = await ipfs.key.list()
-    keys.forEach(key => {
+    let profile = keys.find(key => {
       if (key.name === userAddressKeyName) {
-        profile = key.id
+        return key.id
       }
     })
     if (profile) {
       return profile
+    } else {
+      // Initialize the user profile key and files if they don't exist
+      const key = await ipfs.key.gen(userAddressKeyName, {
+        type: 'rsa', size: 2048
+      })
+      const addRes = await addUserProfile({
+        userName: 'Viddist ~ö~ User', pinnedVids: []
+      })
+      // This has worked so far but watch out. Should probably run stat instead
+      const dirHash = addRes[2].hash
+      const publishRes = await Promise.all([
+        ipfs.pin.add(dirHash, {recursive: true}).hash,
+        ipfs.name.publish(dirHash, {key: userAddressKeyName})
+      ])
+      console.log('Profile published at:', publishRes[1])
+      return key.id
     }
-    // Initialize the user profile key and files if they don't exist
-    const key = await ipfs.key.gen(userAddressKeyName, {
-      type: 'rsa', size: 2048
-    })
-    const addRes = await addUserProfile({
-      userName: 'Viddist ~ö~ User', pinnedVids: []
-    })
-    // This has worked so far but watch out. Should probably run stat instead
-    const dirHash = addRes[2].hash
-    const publishRes = await Promise.all([
-      ipfs.pin.add(dirHash, {recursive: true}).hash,
-      ipfs.name.publish(dirHash, {key: userAddressKeyName})
-    ])
-    console.log('Profile published at:', publishRes[1])
-    return key.id
   } catch (error) {
     console.error('Failed to init user profile')
     throw error
