@@ -22,7 +22,7 @@ module.exports = (state, emit) => {
         <div id="logo">Viddist</div>
       </div>
       <div>Your user address: 
-        <div id="user-address"></div>
+        <div id="my-user-address"></div>
       </div>
       <form onsubmit=${viewProfile}>
         <div>
@@ -31,7 +31,7 @@ module.exports = (state, emit) => {
           <button>View user</button>
         </div>
       </form>
-      <div id="other-user-profile"></div>
+      <div>${state.otherUserProfile}</div>
       <form onsubmit=${playNewVideo}>
         <div>
           <label>Video address</label>

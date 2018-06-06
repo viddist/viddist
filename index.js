@@ -37,13 +37,15 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   console.log('ID:', await ipfs.id())
 
   train.use((state, emitter) => {
-    state.myAddress = ''
+    state.myProfileAddress = ''
+    state.otherUserProfile = ''
 
     emitter.on('viewProfile', async userId => {
       const userProfileFile = userId + '/user-profile.json'
       const address = await ipfs.name.resolve(userProfileFile)
       const data = await ipfs.files.cat(address)
-      byId('other-user-profile').innerText = data.toString()
+      state.otherUserProfile = data.toString()
+      emitter.emit('render')
     })
 
     emitter.on('playNewVideo', async newVid => {
@@ -82,7 +84,7 @@ const initUserProfile = async () => {
     let alreadyInited = false
     keys.forEach(key => {
       if (key.name === userAddressKeyName) {
-        byId('user-address').innerText = key.id
+        byId('my-user-address').innerText = key.id
         alreadyInited = true
       }
     })
@@ -93,7 +95,7 @@ const initUserProfile = async () => {
     const key = await ipfs.key.gen(userAddressKeyName, {
       type: 'rsa', size: 2048
     })
-    byId('user-address').innerText = key.id
+    byId('my-user-address').innerText = key.id
     const addRes = await addUserProfile({
       userName: 'Viddist ~ö~ User', pinnedVids: []
     })
