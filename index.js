@@ -24,9 +24,18 @@ const vidHash = 'QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp
 const protocolVersion = '1'
 const userAddressKeyName = 'user-address'
 let ipfs
+// Maybe move all the choo initialization to after ipfs has initialized?
+// Show a view that is just a 'throbber' (lol that's the actual word)?
 const train = choo()
 
 train.use((state, emitter) => {
+  emitter.on('viewProfile', async userId => {
+    const userProfileFile = userId + '/user-profile.json'
+    const address = await ipfs.name.resolve(userProfileFile)
+    const data = await ipfs.files.cat(address)
+    byId('other-user-profile').innerText = data.toString()
+  })
+
   emitter.on('playNewVideo', async newVid => {
     await playVideo(newVid)
   })
@@ -40,17 +49,6 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   if (err) { console.error(err) }
   ipfs = ipfsd.api
 
-  byId('other-user-address-form').addEventListener('submit', e => {
-    e.preventDefault()
-    const otherUserId = byId('other-user-address').value
-    const userProfileFile = otherUserId + '/user-profile.json'
-    ipfs.name.resolve(userProfileFile).then(address => {
-      return ipfs.files.cat(address)
-    }).then(data => {
-      byId('other-user-profile').innerText = data.toString()
-    }).catch(console.error)
-  })
-
   console.log('Started ipfs')
 
   console.log('ID:', await ipfs.id())
@@ -60,6 +58,7 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   await playVideo(vidHash)
 })
 
+// Refactor out most (all?) uses of this in this file
 const byId = id => document.getElementById(id)
 
 const playVideo = async hash => {
