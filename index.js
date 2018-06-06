@@ -28,23 +28,6 @@ let ipfs
 // Show a view that is just a 'throbber' (lol that's the actual word)?
 const train = choo()
 
-train.use((state, emitter) => {
-  emitter.on('viewProfile', async userId => {
-    const userProfileFile = userId + '/user-profile.json'
-    const address = await ipfs.name.resolve(userProfileFile)
-    const data = await ipfs.files.cat(address)
-    byId('other-user-profile').innerText = data.toString()
-  })
-
-  emitter.on('playNewVideo', async newVid => {
-    await playVideo(newVid)
-  })
-})
-
-train.route('/', main)
-
-train.mount('div')
-
 daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   if (err) { console.error(err) }
   ipfs = ipfsd.api
@@ -52,6 +35,25 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   console.log('Started ipfs')
 
   console.log('ID:', await ipfs.id())
+
+  train.use((state, emitter) => {
+    state.myAddress = ''
+
+    emitter.on('viewProfile', async userId => {
+      const userProfileFile = userId + '/user-profile.json'
+      const address = await ipfs.name.resolve(userProfileFile)
+      const data = await ipfs.files.cat(address)
+      byId('other-user-profile').innerText = data.toString()
+    })
+
+    emitter.on('playNewVideo', async newVid => {
+      await playVideo(newVid)
+    })
+  })
+
+  train.route('/', main)
+
+  train.mount('div')
 
   await initUserProfile()
 
