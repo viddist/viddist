@@ -83,11 +83,14 @@ const initUserProfile = async () => {
       const key = await ipfs.key.gen(userAddressKeyName, {
         type: 'rsa', size: 2048
       })
-      const addRes = await addUserProfile({
-        userName: 'Viddist ~ö~ User', pinnedVids: []
-      })
-      // This has worked so far but watch out. Should probably run stat instead
-      const dirHash = addRes[2].hash
+      // TODO: Make addUserProfile create the profile in mfs so it's more
+      // easily modifiable
+      const addRes = await addUserProfile({ userName: 'Viddist ~ö~ User',
+        pinnedVids: [] })
+      // I don't like this way of finding the top hash but they do it like this
+      // in the official tests so it should be fine.
+      // TODO: Use files.stat to get the hash once the profile is in mfs
+      const dirHash = addRes[addRes.length - 1].hash
       const publishRes = await Promise.all([
         ipfs.pin.add(dirHash, {recursive: true}).hash,
         ipfs.name.publish(dirHash, {key: userAddressKeyName})
