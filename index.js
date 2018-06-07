@@ -24,8 +24,6 @@ const vidHash = 'QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp
 const protocolVersion = '1'
 const userAddressKeyName = 'user-address'
 let ipfs
-// Maybe move all the choo initialization to after ipfs has initialized?
-// Show a view that is just a 'throbber' (lol that's the actual word)?
 const train = choo()
 
 daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
