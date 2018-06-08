@@ -2,7 +2,7 @@
   "name": "viddist",
   "version": "1.0.0",
   "description": "A distributed alternative to YouTube and Popcorn Time",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
