@@ -3,6 +3,7 @@ const daemonFactory = require('ipfsd-ctl').create({type: 'go'})
 const choo = require('choo')
 
 const main = require('./templates/main.js')
+const profile = require('./my-profile.js')
 
 console.log('running')
 
@@ -21,8 +22,6 @@ const vidHash = 'QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp
 // Big buck bunny 480p avi transcoded to mp4 webopt using handbrake
 // const vidHash = 'QmNnpS4RXHBMKhTY1s1gHn41xmXiWJEAakmM5uMZ66HfGx/big-buck-bunny-480p-webopt.mp4'
 
-const protocolVersion = '1'
-const userAddressKeyName = 'user-address'
 let ipfs
 const train = choo()
 
@@ -52,7 +51,7 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
       emitter.emit('render')
     })
 
-    state.myProfileAddress = await initUserProfile()
+    state.myProfileAddress = await profile.init(ipfs)
     emitter.emit('render')
 
     emitter.emit('playNewVideo', vidHash)
@@ -67,51 +66,3 @@ const playVideo = async hash => {
   const blob = new window.Blob([data], { type: 'video/mp4' })
   return window.URL.createObjectURL(blob)
 }
-
-const initUserProfile = async () => {
-  try {
-    const keys = await ipfs.key.list()
-    let profile = keys.find(key => {
-      if (key.name === userAddressKeyName) {
-        return key.id
-      }
-    })
-    if (profile) {
-      return profile
-    } else {
-      // Initialize the user profile key and files if they don't exist
-      const key = await ipfs.key.gen(userAddressKeyName, {
-        type: 'rsa', size: 2048
-      })
-      // TODO: Make addUserProfile create the profile in mfs so it's more
-      // easily modifiable
-      const addRes = await addUserProfile({ userName: 'Viddist ~ö~ User',
-        pinnedVids: [] })
-      // I don't like this way of finding the top hash but they do it like this
-      // in the official tests so it should be fine.
-      // TODO: Use files.stat to get the hash once the profile is in mfs
-      const dirHash = addRes[addRes.length - 1].hash
-      const publishRes = await Promise.all([
-        ipfs.pin.add(dirHash, {recursive: true}).hash,
-        ipfs.name.publish(dirHash, {key: userAddressKeyName})
-      ])
-      console.log('Profile published at:', publishRes[1])
-      return key.id
-    }
-  } catch (error) {
-    console.error('Failed to init user profile')
-    throw error
-  }
-}
-
-const addUserProfile = async profile => {
-  return ipfs.files.add([{
-    path: '/viddist-meta/viddist-version.txt',
-    content: Buffer.from(protocolVersion, 'utf-8')
-  }, { // I love that ESLint/Standard don't complain about anything here
-    path: '/viddist-meta/user-profile.json',
-    content: Buffer.from(JSON.stringify(profile))
-  }])
-}
-
-// const updateUserProfile =
