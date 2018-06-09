@@ -39,7 +39,7 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
     state.videoAddress = ''
 
     emitter.on('viewProfile', async userId => {
-      state.otherUserProfile = await profile.cat(ipfs, userId)
+      state.otherUserProfile = await profile.cat(userId)
       emitter.emit('render')
     })
 
