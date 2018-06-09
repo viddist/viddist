@@ -38,6 +38,11 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
     state.otherUserProfile = ''
     state.videoAddress = ''
 
+    state.myProfileAddress = await profile.init(ipfs)
+    emitter.emit('render')
+
+    emitter.emit('playNewVideo', vidHash)
+
     emitter.on('viewProfile', async userId => {
       state.otherUserProfile = await profile.cat(userId)
       emitter.emit('render')
@@ -47,11 +52,6 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
       state.videoAddress = await playVideo(newVid)
       emitter.emit('render')
     })
-
-    state.myProfileAddress = await profile.init(ipfs)
-    emitter.emit('render')
-
-    emitter.emit('playNewVideo', vidHash)
   })
 
   train.route('/', main)
