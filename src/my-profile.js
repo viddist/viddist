@@ -61,7 +61,7 @@ profile.publish = async () => {
     await ipfs.pin.add(hash, {recursive: true})
     const oldHash = await ipfs.name.resolve(await profile._getMyAddress())
     await ipfs.name.publish(hash, {key: userAddressKeyName})
-    await ipfs.pin.rm(oldHash)
+    await ipfs.pin.rm(oldHash, {recursive: true})
   } catch (error) {
     console.error('Failed to publish profile:', error)
     throw error
