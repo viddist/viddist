@@ -18,52 +18,13 @@ profile.init = async api => {
       })
       // TODO: Make addUserProfile create the profile in mfs so it's more
       // easily modifiable
-      await profile.createEmpty(ipfs)
-      await profile.publish(ipfs)
+      await profile._createEmpty(ipfs)
+      await profile._publish(ipfs)
       console.log('Profile published at:', key.id)
       return key.id
     }
   } catch (error) {
     console.error('Failed to init user profile:', error)
-    throw error
-  }
-}
-
-profile._getMyAddress = async () => {
-  const keys = await ipfs.key.list()
-  // Returns undefined if the key name doesn't exist
-  return keys.find(key => {
-    if (key.name === userAddressKeyName) {
-      return key.id
-    }
-  })
-}
-
-profile.createEmpty = async () => {
-  try {
-    await ipfs.files.mkdir('/viddist-profile/')
-    await ipfs.files.write('/viddist-profile/viddist-version.txt',
-      Buffer.from(protocolVersion, 'utf-8'), {create: true})
-    await ipfs.files.write('/viddist-profile/user-profile.json',
-      Buffer.from(JSON.stringify(
-        {name: 'unnamed viddist user', pinnedVids: []})), {create: true})
-  } catch (error) {
-    console.error('Failed create an empty profile:', error)
-    throw error
-  }
-}
-
-profile.publish = async () => {
-  try {
-    const hash = (await ipfs.files.stat('/', {hash: true})).hash
-    // go-ipfs is recursive by default so we probably don't need this option,
-    // but interface-ipfs-core says it isn't. Confusing.
-    await ipfs.pin.add(hash, {recursive: true})
-    const oldHash = await ipfs.name.resolve(await profile._getMyAddress())
-    await ipfs.name.publish(hash, {key: userAddressKeyName})
-    await ipfs.pin.rm(oldHash, {recursive: true})
-  } catch (error) {
-    console.error('Failed to publish profile:', error)
     throw error
   }
 }
@@ -84,4 +45,41 @@ profile.cat = async nameHash => {
   }
 }
 
-// const updateUserProfile =
+profile._getMyAddress = async () => {
+  const keys = await ipfs.key.list()
+  // Returns undefined if the key name doesn't exist
+  return keys.find(key => {
+    if (key.name === userAddressKeyName) {
+      return key.id
+    }
+  })
+}
+
+profile._createEmpty = async () => {
+  try {
+    await ipfs.files.mkdir('/viddist-profile/')
+    await ipfs.files.write('/viddist-profile/viddist-version.txt',
+      Buffer.from(protocolVersion, 'utf-8'), {create: true})
+    await ipfs.files.write('/viddist-profile/user-profile.json',
+      Buffer.from(JSON.stringify(
+        {name: 'unnamed viddist user', pinnedVids: []})), {create: true})
+  } catch (error) {
+    console.error('Failed create an empty profile:', error)
+    throw error
+  }
+}
+
+profile._publish = async () => {
+  try {
+    const hash = (await ipfs.files.stat('/', {hash: true})).hash
+    // go-ipfs is recursive by default so we probably don't need this option,
+    // but interface-ipfs-core says it isn't. Confusing.
+    await ipfs.pin.add(hash, {recursive: true})
+    const oldHash = await ipfs.name.resolve(await profile._getMyAddress())
+    await ipfs.name.publish(hash, {key: userAddressKeyName})
+    await ipfs.pin.rm(oldHash, {recursive: true})
+  } catch (error) {
+    console.error('Failed to publish profile:', error)
+    throw error
+  }
+}
