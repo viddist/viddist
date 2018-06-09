@@ -3,7 +3,7 @@ const userAddressKeyName = 'user-address'
 
 const p = module.exports = {}
 
-p.init = async (ipfs) => {
+p.init = async ipfs => {
   try {
     const keys = await ipfs.key.list()
     let profile = keys.find(key => {
@@ -20,21 +20,13 @@ p.init = async (ipfs) => {
       })
       // TODO: Make addUserProfile create the profile in mfs so it's more
       // easily modifiable
-      const addRes = await p.addUserProfile(ipfs,
-        { userName: 'Viddist ~ö~ User', pinnedVids: [] })
-      // I don't like this way of finding the top hash but they do it like this
-      // in the official tests so it should be fine.
-      // TODO: Use files.stat to get the hash once the profile is in mfs
-      const dirHash = addRes[addRes.length - 1].hash
-      const publishRes = await Promise.all([
-        ipfs.pin.add(dirHash, {recursive: true}).hash,
-        ipfs.name.publish(dirHash, {key: userAddressKeyName})
-      ])
-      console.log('Profile published at:', publishRes[1])
+      await p.createEmpty(ipfs)
+      await p.publish(ipfs)
+      console.log('Profile published at:', key.id)
       return key.id
     }
   } catch (error) {
-    console.error('Failed to init user profile')
+    console.error('Failed to init user profile:', error)
     throw error
   }
 }
@@ -42,14 +34,42 @@ p.init = async (ipfs) => {
 // TODO: Make this function not take the profile arg, the only thing we need
 // is the username and we can add that by calling e.g. setUsername(name) after
 // this one
-p.addUserProfile = (ipfs, profile) => {
-  return ipfs.files.add([{
-    path: '/viddist-meta/viddist-version.txt',
-    content: Buffer.from(protocolVersion, 'utf-8')
-  }, { // I love that ESLint/Standard don't complain about anything here
-    path: '/viddist-meta/user-profile.json',
-    content: Buffer.from(JSON.stringify(profile))
-  }])
+p.createEmpty = async ipfs => {
+  try {
+    await ipfs.files.mkdir('/viddist-profile/')
+    await ipfs.files.write('/viddist-profile/viddist-version.txt',
+      Buffer.from(protocolVersion, 'utf-8'), {create: true})
+    await ipfs.files.write('/viddist-profile/user-profile.json',
+      Buffer.from(JSON.stringify(
+        {name: 'unnamed viddist user', pinnedVids: []})), {create: true})
+  } catch (error) {
+    console.error('Failed create an empty profile:', error)
+    throw error
+  }
+}
+
+p.publish = async ipfs => {
+  try {
+    const hash = (await ipfs.files.stat('/', {hash: true})).hash
+    // go-ipfs is recursive by default so we probably don't need this option,
+    // but interface-ipfs-core says it isn't. Confusing.
+    await ipfs.pin.add(hash, {recursive: true})
+    await ipfs.name.publish(hash, {key: userAddressKeyName})
+  } catch (error) {
+    console.error('Failed to publish profile:', error)
+    throw error
+  }
+}
+
+// This works on any profile, not just 'my-profile'. Should it be in another
+// file?
+p.cat = async (ipfs, nameHash) => {
+  const rootHash = await ipfs.name.resolve(nameHash)
+  const path = rootHash + '/viddist-profile/user-profile.json'
+  console.log('ipfs path to profile:', path)
+  // Since we're reading from a hash we have to use cat, not read (which is
+  // only for raw mfs paths)
+  return (await ipfs.files.cat(path)).toString()
 }
 
 // const updateUserProfile =
