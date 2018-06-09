@@ -45,6 +45,21 @@ profile.cat = async nameHash => {
   }
 }
 
+// The profile and pinnedVids should maybe just be dirs. files.cp should be
+// almost O(1) to get the video in there (the video should still be originally
+// added with files.add since that's better for immutable data) and we won't
+// have to mess around as much with json.
+// And, since mfs is always pinned, we wouldn't have to manually pin videos
+profile.pinVideo = async vidHash => {
+  await ipfs.pin.add(vidHash)
+  const myProfile = JSON.parse((await ipfs.files
+    .read('/viddist-profile/user-profile.json')).toString())
+  myProfile.pinnedVids.push(vidHash)
+  await ipfs.files.write('/viddist-profile/user-profile.json',
+    Buffer.from(JSON.stringify(myProfile)), {truncate: true})
+  await profile._publish()
+}
+
 profile._getMyAddress = async () => {
   const keys = await ipfs.key.list()
   // Returns undefined if the key name doesn't exist
@@ -71,13 +86,10 @@ profile._createEmpty = async () => {
 
 profile._publish = async () => {
   try {
+    // According to irc (and indications from tests), the mfs root is always
+    // recursively pinned
     const hash = (await ipfs.files.stat('/', {hash: true})).hash
-    // go-ipfs is recursive by default so we probably don't need this option,
-    // but interface-ipfs-core says it isn't. Confusing.
-    await ipfs.pin.add(hash, {recursive: true})
-    const oldHash = await ipfs.name.resolve(await profile._getMyAddress())
     await ipfs.name.publish(hash, {key: userAddressKeyName})
-    await ipfs.pin.rm(oldHash, {recursive: true})
   } catch (error) {
     console.error('Failed to publish profile:', error)
     throw error
