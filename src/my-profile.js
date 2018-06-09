@@ -8,12 +8,7 @@ let ipfs
 profile.init = async api => {
   try {
     ipfs = api
-    const keys = await ipfs.key.list()
-    let profileId = keys.find(key => {
-      if (key.name === userAddressKeyName) {
-        return key.id
-      }
-    })
+    const profileId = await profile._getMyAddress()
     if (profileId) {
       return profileId
     } else {
@@ -32,6 +27,16 @@ profile.init = async api => {
     console.error('Failed to init user profile:', error)
     throw error
   }
+}
+
+profile._getMyAddress = async () => {
+  const keys = await ipfs.key.list()
+  // Returns undefined if the key name doesn't exist
+  return keys.find(key => {
+    if (key.name === userAddressKeyName) {
+      return key.id
+    }
+  })
 }
 
 profile.createEmpty = async () => {
@@ -54,7 +59,9 @@ profile.publish = async () => {
     // go-ipfs is recursive by default so we probably don't need this option,
     // but interface-ipfs-core says it isn't. Confusing.
     await ipfs.pin.add(hash, {recursive: true})
+    const oldHash = await ipfs.name.resolve(await profile._getMyAddress())
     await ipfs.name.publish(hash, {key: userAddressKeyName})
+    await ipfs.pin.rm(oldHash)
   } catch (error) {
     console.error('Failed to publish profile:', error)
     throw error
