@@ -59,6 +59,13 @@
       ],
       "no-console": [
         "off"
+      ],
+      "no-shadow": [
+        "error", {
+          "builtinGlobals": true,
+          "hoist": "functions",
+          "allow": []
+        }
       ]
     }
   }
