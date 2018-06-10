@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "electron": "^2.0.2",
+    "eslint": "^4.19.1",
     "standard": "^11.0.1"
   },
   "eslintConfig": {
@@ -60,5 +61,5 @@
         "off"
       ]
     }
-}
+  }
 }
