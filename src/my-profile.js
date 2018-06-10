@@ -16,8 +16,6 @@ profile.init = async api => {
       const key = await ipfs.key.gen(userAddressKeyName, {
         type: 'rsa', size: 2048
       })
-      // TODO: Make addUserProfile create the profile in mfs so it's more
-      // easily modifiable
       await profile._createEmpty(ipfs)
       await profile._publish(ipfs)
       console.log('Profile published at:', key.id)
