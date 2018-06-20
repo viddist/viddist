@@ -21,9 +21,9 @@
   },
   "homepage": "https://github.com/viddist/viddist#readme",
   "dependencies": {
-    "choo": "^6.11.0",
+    "choo": "^6.12.1",
     "go-ipfs-dep": "^0.4.15",
-    "ipfsd-ctl": "^0.37.3"
+    "ipfsd-ctl": "^0.37.4"
   },
   "devDependencies": {
     "electron": "^2.0.2",
@@ -61,7 +61,8 @@
         "off"
       ],
       "no-shadow": [
-        "error", {
+        "error",
+        {
           "builtinGlobals": true,
           "hoist": "functions",
           "allow": []
