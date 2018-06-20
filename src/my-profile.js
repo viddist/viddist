@@ -29,10 +29,10 @@ profile.init = async api => {
 
 // This works on any profile, not just 'my-profile'. Should it be in another
 // file?
-profile.cat = async nameHash => {
+profile.catUsername = async nameHash => {
   try {
     const rootHash = await ipfs.name.resolve(nameHash)
-    const path = rootHash + '/viddist-profile/user-profile.json'
+    const path = rootHash + '/viddist-profile/username.txt'
     console.log('ipfs path to profile:', path)
     // Since we're reading from a hash we have to use cat, not read (which is
     // only for raw mfs paths)
@@ -72,12 +72,11 @@ profile._createEmpty = async () => {
   try {
     await ipfs.files.mkdir('/viddist-profile/')
     await ipfs.files.write('/viddist-profile/viddist-version.txt',
-      Buffer.from(protocolVersion, 'utf-8'), {create: true})
-    await ipfs.files.write('/viddist-profile/user-profile.json',
-      Buffer.from(JSON.stringify(
-        {name: 'unnamed viddist user', pinnedVids: []})), {create: true})
+      Buffer.from(protocolVersion), {create: true})
+    await ipfs.files.write('/viddist-profile/username.txt',
+      Buffer.from('unnamed viddist user'), {create: true})
   } catch (error) {
-    console.error('Failed create an empty profile:', error)
+    console.error('Failed to create an empty profile:', error)
     throw error
   }
 }
