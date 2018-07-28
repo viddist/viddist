@@ -22,7 +22,7 @@
   "homepage": "https://github.com/viddist/viddist#readme",
   "dependencies": {
     "choo": "^6.12.1",
-    "go-ipfs-dep": "^0.4.15",
+    "go-ipfs-dep": "0.4.15",
     "ipfsd-ctl": "^0.37.4"
   },
   "devDependencies": {
