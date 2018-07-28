@@ -17,7 +17,7 @@ profile.init = async api => {
         type: 'rsa', size: 2048
       })
       await profile._createEmpty(ipfs)
-      await profile._publish(ipfs)
+      profile._publish(ipfs)
       console.log('Profile published at:', key.id)
       return key.id
     }
@@ -54,7 +54,7 @@ profile.pinVideo = async vidHash => {
   myProfile.pinnedVids.push(vidHash)
   await ipfs.files.write('/viddist-profile/user-profile.json',
     Buffer.from(JSON.stringify(myProfile)), {truncate: true})
-  await profile._publish()
+  profile._publish()
 }
 
 profile._getMyAddress = async () => {
@@ -81,6 +81,7 @@ profile._createEmpty = async () => {
   }
 }
 
+// Not recommended to await this function, name publishing is super slow
 profile._publish = async () => {
   try {
     // According to irc (and indications from tests), the mfs root is always

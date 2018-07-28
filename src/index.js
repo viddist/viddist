@@ -10,9 +10,9 @@ console.log('running')
 // From the CCC archives, pinned by others but recommended to pin locally to
 // speed up testing. (I don't recommend pinning the top hash, it's several TBs)
 // Blinkenlights 1
-const vidHash = 'QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp4/blinkenlights-video-large.mp4'
+// const vidHash = 'QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp4/blinkenlights-video-large.mp4'
 // Blinkenlights 2
-// const vidhash = 'QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp4/P-Link.mp4'
+const vidHash = 'QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp4/P-Link.mp4'
 // NOTE: The hashes below here are things that are probably offline. Contact
 // me and I'll bring up my daemon for a bit so you can pin them.
 // Sintel with subtitles 130MB
