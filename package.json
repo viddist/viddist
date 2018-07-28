@@ -23,11 +23,11 @@
   "dependencies": {
     "choo": "^6.12.1",
     "go-ipfs-dep": "0.4.17",
-    "ipfsd-ctl": "^0.37.4"
+    "ipfsd-ctl": "^0.39.0"
   },
   "devDependencies": {
     "electron": "^2.0.2",
-    "eslint": "^4.19.1",
+    "eslint": "^5.2.0",
     "standard": "^11.0.1"
   },
   "eslintConfig": {
