@@ -16,8 +16,8 @@ profile.init = async api => {
       const key = await ipfs.key.gen(userAddressKeyName, {
         type: 'rsa', size: 2048
       })
-      await profile._createEmpty(ipfs)
-      profile._publish(ipfs)
+      await profile._createEmpty()
+      profile._publish()
       console.log('Profile published at:', key.id)
       return key.id
     }
