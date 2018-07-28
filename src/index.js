@@ -38,8 +38,10 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
     state.otherUserProfile = ''
     state.videoAddress = ''
 
+    console.log('initing profile')
     state.myProfileAddress = await profile.init(ipfs)
     emitter.emit('render')
+    console.log('inited profile')
 
     emitter.on('viewProfile', async userId => {
       state.otherUserProfile = await profile.catUsername(userId)

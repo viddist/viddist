@@ -31,9 +31,8 @@ profile.init = async api => {
 // file?
 profile.catUsername = async nameHash => {
   try {
-    const rootHash = await ipfs.name.resolve(nameHash)
-    const path = rootHash + '/viddist-profile/username.txt'
-    console.log('ipfs path to profile:', path)
+    const profileHash = await ipfs.name.resolve(nameHash)
+    const path = profileHash + '/username.txt'
     // Since we're reading from a hash we have to use cat, not read (which is
     // only for raw mfs paths)
     return (await ipfs.files.cat(path)).toString()
@@ -75,6 +74,7 @@ profile._createEmpty = async () => {
       Buffer.from(protocolVersion), {create: true})
     await ipfs.files.write('/viddist-profile/username.txt',
       Buffer.from('unnamed viddist user'), {create: true})
+    await ipfs.files.mkdir('/pinned-videos/')
   } catch (error) {
     console.error('Failed to create an empty profile:', error)
     throw error
@@ -85,7 +85,8 @@ profile._publish = async () => {
   try {
     // According to irc (and indications from tests), the mfs root is always
     // recursively pinned
-    const hash = (await ipfs.files.stat('/', {hash: true})).hash
+    const hash = (await ipfs.files.stat('/viddist-profile/',
+      {hash: true})).hash
     await ipfs.name.publish(hash, {key: userAddressKeyName})
   } catch (error) {
     console.error('Failed to publish profile:', error)
