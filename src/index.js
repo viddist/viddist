@@ -5,8 +5,6 @@ const choo = require('choo')
 const main = require('./templates/main.js')
 const profile = require('./my-profile.js')
 
-console.log('running')
-
 // From the CCC archives, pinned by others but recommended to pin locally to
 // speed up testing. (I don't recommend pinning the top hash, it's several TBs)
 // Blinkenlights 1
@@ -29,8 +27,6 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   if (err) { console.error(err) }
   ipfs = ipfsd.api
 
-  console.log('Started ipfs')
-
   console.log('ID:', await ipfs.id())
 
   train.use(async (state, emitter) => {
@@ -39,10 +35,8 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
     state.videoLink = ''
     state.videoAddress = ''
 
-    console.log('initing profile')
     state.myProfileAddress = await profile.init(ipfs)
     emitter.emit('render')
-    console.log('inited profile')
 
     emitter.on('viewProfile', async userId => {
       state.otherUserProfile = await profile.catUsername(userId)

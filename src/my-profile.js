@@ -18,7 +18,6 @@ profile.init = async api => {
       })
       await profile._createEmpty()
       profile._publish()
-      console.log('Profile published at:', key.id)
       return key.id
     }
   } catch (error) {
@@ -101,6 +100,7 @@ profile._publish = async () => {
     const hash = (await ipfs.files.stat('/viddist-profile/',
       { hash: true })).hash
     await ipfs.name.publish(hash, {key: userAddressKeyName})
+    // TODO: Put this info in the ui
     console.log('Published profile')
   } catch (error) {
     console.error('Failed to publish profile:', error)

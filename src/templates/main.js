@@ -11,7 +11,6 @@ module.exports = (state, emit) => {
     e.preventDefault()
     // Can we cleanly avoid getElementById here?
     const newVid = document.getElementById('new-video-address').value
-    console.log('Address: ' + newVid)
     emit('playNewVideo', newVid)
   }
 
