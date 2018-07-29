@@ -28,15 +28,21 @@ profile.init = async api => {
 
 // This works on any profile, not just 'my-profile'. Should it be in another
 // file?
-profile.catUsername = async nameHash => {
+profile.getUser = async nameHash => {
   try {
+    console.log('resolving user hash')
     const profileHash = await ipfs.name.resolve(nameHash)
-    const path = profileHash + '/username.txt'
-    // Since we're reading from a hash we have to use cat, not read (which is
-    // only for raw mfs paths)
-    return (await ipfs.files.cat(path)).toString()
+    console.log('resolved user hash')
+    const usernamePath = profileHash + '/username.txt'
+    const username = (await ipfs.files.cat(usernamePath)).toString()
+
+    const pinVidsPath = profileHash + '/pinned-videos.link'
+    const pinVidsHash = (await ipfs.files.cat(pinVidsPath)).toString()
+    const pinVidsList = await ipfs.ls('/ipfs/' + pinVidsHash)
+
+    return { username: username, pinnedVideos: pinVidsList }
   } catch (error) {
-    console.error('Failed to cat a profile:', error)
+    console.error('Failed to get user profile:', error)
     throw error
   }
 }

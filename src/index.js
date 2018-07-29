@@ -39,7 +39,7 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
     emitter.emit('render')
 
     emitter.on('viewProfile', async userId => {
-      state.otherUserProfile = await profile.catUsername(userId)
+      state.otherUserProfile = await profile.getUser(userId)
       emitter.emit('render')
     })
 

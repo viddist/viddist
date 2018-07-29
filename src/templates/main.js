@@ -30,7 +30,7 @@ module.exports = (state, emit) => {
           <button>View user</button>
         </div>
       </form>
-      <div>${state.otherUserProfile}</div>
+      <div>${state.otherUserProfile.username}</div>
       <form onsubmit=${playNewVideo}>
         <div>
           <label>Video address</label>
