@@ -31,7 +31,7 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
 
   train.use(async (state, emitter) => {
     state.myProfileAddress = ''
-    state.otherUserProfile = ''
+    state.otherUserProfile = null
     state.videoLink = ''
     state.videoAddress = ''
 

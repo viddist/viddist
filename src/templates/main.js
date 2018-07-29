@@ -1,5 +1,7 @@
 const html = require('choo/html')
 
+const user = require('./user.js')
+
 module.exports = (state, emit) => {
   const viewProfile = e => {
     e.preventDefault()
@@ -30,7 +32,7 @@ module.exports = (state, emit) => {
           <button>View user</button>
         </div>
       </form>
-      <div>${state.otherUserProfile.username}</div>
+      <div>${user(state.otherUserProfile)}</div>
       <form onsubmit=${playNewVideo}>
         <div>
           <label>Video address</label>
