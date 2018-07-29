@@ -12,6 +12,8 @@ A completely decentralized video streaming and publishing app
 `ctrl+shift+i` to see status messages
 * Publishing and reading profiles takes super long (a minute or two). Wait for
 the console to say that the profile is published before trying to read it.
+* So far, everything you do in the app is temporary, i.e. your profile and data
+is thrown away when you close the app
 
 ## Contributing
 * Run standard.js and ESLint on the code before committing js. package.json has
