@@ -42,19 +42,30 @@ profile.catUsername = async nameHash => {
   }
 }
 
-// The profile and pinnedVids should maybe just be dirs. files.cp should be
-// almost O(1) to get the video in there (the video should still be originally
-// added with files.add since that's better for immutable data) and we won't
-// have to mess around as much with json.
-// And, since mfs is always pinned, we wouldn't have to manually pin videos
-profile.pinVideo = async vidHash => {
-  await ipfs.pin.add(vidHash)
-  const myProfile = JSON.parse((await ipfs.files
-    .read('/viddist-profile/user-profile.json')).toString())
-  myProfile.pinnedVids.push(vidHash)
-  await ipfs.files.write('/viddist-profile/user-profile.json',
-    Buffer.from(JSON.stringify(myProfile)), {truncate: true})
-  profile._publish()
+// TODO: Make saner video naming
+profile.pinVideo = async vidLink => {
+  try {
+    // Cool code that grabs the file's name in a filepath
+    const fileName = vidLink.replace('.mp4', '').split('/').slice(-1)[0]
+    // Hacky way of getting a unique video name
+    const vidHash = (await ipfs.files.stat('/ipfs/' + vidLink,
+      { hash: true })).hash
+    const vidName = fileName + '-' + vidHash.slice(-5) + '.mp4'
+
+    await ipfs.files.cp('/ipfs/' + vidLink, '/pinned-videos/' + vidName)
+    await profile._updatePinVidsLink()
+    profile._publish()
+  } catch (err) {
+    console.error('Failed to pin video:', err)
+    throw err
+  }
+}
+
+profile._updatePinVidsLink = async () => {
+  const pinHash = (await ipfs.files.stat('/pinned-videos/',
+    { hash: true })).hash
+  await ipfs.files.write('/viddist-profile/pinned-videos.link',
+    Buffer.from(pinHash), { create: true, truncate: true })
 }
 
 profile._getMyAddress = async () => {
@@ -71,10 +82,11 @@ profile._createEmpty = async () => {
   try {
     await ipfs.files.mkdir('/viddist-profile/')
     await ipfs.files.write('/viddist-profile/viddist-version.txt',
-      Buffer.from(protocolVersion), {create: true})
+      Buffer.from(protocolVersion), { create: true })
     await ipfs.files.write('/viddist-profile/username.txt',
-      Buffer.from('unnamed viddist user'), {create: true})
+      Buffer.from('unnamed viddist user'), { create: true })
     await ipfs.files.mkdir('/pinned-videos/')
+    await profile._updatePinVidsLink()
   } catch (error) {
     console.error('Failed to create an empty profile:', error)
     throw error
@@ -87,8 +99,9 @@ profile._publish = async () => {
     // According to irc (and indications from tests), the mfs root is always
     // recursively pinned
     const hash = (await ipfs.files.stat('/viddist-profile/',
-      {hash: true})).hash
+      { hash: true })).hash
     await ipfs.name.publish(hash, {key: userAddressKeyName})
+    console.log('Published profile')
   } catch (error) {
     console.error('Failed to publish profile:', error)
     throw error

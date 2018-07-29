@@ -36,6 +36,7 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   train.use(async (state, emitter) => {
     state.myProfileAddress = ''
     state.otherUserProfile = ''
+    state.videoLink = ''
     state.videoAddress = ''
 
     console.log('initing profile')
@@ -49,11 +50,13 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
     })
 
     emitter.on('playNewVideo', async newVid => {
+      state.videoLink = newVid
       state.videoAddress = await playVideo(newVid)
       emitter.emit('render')
     })
 
     emitter.emit('playNewVideo', vidHash)
+    profile.pinVideo(state.videoLink)
   })
 
   train.route('/', main)
