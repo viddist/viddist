@@ -7,7 +7,7 @@ speed up testing. (I don't recommend pinning the top hash, it is several TBs
 large)
 * "Blinkenlights 1"
  `QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp4/blinkenlights-video-large.mp4`
-* Blinkenlights 2
+* "Blinkenlights 2"
 `QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp4/P-Link.mp4`
 
 The videos below are things that are probably offline. Contact
