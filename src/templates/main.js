@@ -16,6 +16,10 @@ module.exports = (state, emit) => {
     emit('playNewVideo', newVid)
   }
 
+  const pinCurrentVideo = () => {
+    emit('pinVideo', state.videoLink)
+  }
+
   return html`
     <div>
       <div id="header-logo">
@@ -40,6 +44,7 @@ module.exports = (state, emit) => {
           <button>Play video</button>
         </div>
       </form>
+      <button onclick=${pinCurrentVideo}>Pin this video</button>
       <div>
         <video controls autoplay muted src=${state.videoAddress}>
         </video>

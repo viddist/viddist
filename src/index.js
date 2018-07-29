@@ -49,8 +49,12 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
       emitter.emit('render')
     })
 
+    emitter.on('pinVideo', async videoLink => {
+      await profile.pinVideo(videoLink)
+      console.log('Pinned current video')
+    })
+
     emitter.emit('playNewVideo', vidHash)
-    profile.pinVideo(state.videoLink)
   })
 
   train.route('/', main)
