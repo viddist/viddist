@@ -31,6 +31,8 @@ profile.init = async api => {
 profile.getUser = async nameHash => {
   try {
     console.log('resolving user hash')
+    // could set dht-record-count lower
+    // https://github.com/ipfs/go-ipfs/pull/4733
     const profileHash = await ipfs.name.resolve(nameHash)
     console.log('resolved user hash')
     const usernamePath = profileHash + '/username.txt'
