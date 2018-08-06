@@ -10,11 +10,14 @@ const vidHash = 'QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp
 // See test-videos.md for more videos to use
 
 let ipfs
+let gateway
 const train = choo()
 
 daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
   if (err) { console.error(err) }
   ipfs = ipfsd.api
+  const gwInfo = ipfsd.gatewayAddr.nodeAddress()
+  gateway = `http://${gwInfo.address}:${gwInfo.port}`
 
   console.log('ID:', await ipfs.id())
 
@@ -51,7 +54,7 @@ daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {
 })
 
 const playVideo = async hash => {
-  const data = await ipfs.files.cat(hash)
-  const blob = new window.Blob([data], { type: 'video/mp4' })
-  return window.URL.createObjectURL(blob)
+  // Ideally we don't want to use gateways (not even local ones) but until we
+  // have browser support this works super well
+  return `${gateway}/ipfs/${hash}`
 }
