@@ -9,3 +9,8 @@
 #logo {
     display: inline-block;
 }
+
+video {
+    max-width: 1280px;
+    max-height: 720px;
+}
