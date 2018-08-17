@@ -4,6 +4,9 @@ const choo = require('choo')
 const main = require('./templates/main.js')
 const profile = require('./my-profile.js')
 
+const css = require("sheetify")
+css('./index.css')
+
 const train = choo()
 
 train.use(async (state, emitter) => {

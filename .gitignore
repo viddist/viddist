@@ -1,5 +1,5 @@
 node_modules/
 .eslintrc.json
 .vscode/
-dist/*
-!dist/media
+dist/bundle.css
+dist/bundle.js
