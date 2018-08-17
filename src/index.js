@@ -1,16 +1,9 @@
 'use strict'
-const daemonFactory = require('ipfsd-ctl').create({type: 'go'})
 const choo = require('choo')
 
 const main = require('./templates/main.js')
 const profile = require('./my-profile.js')
 
-// "Blinkenlights 2"
-const vidHash = 'QmW84mqTYnCkRTy6VeRJebPWuuk8b27PJ4bWm2bL4nrEWb/blinkenlights/mp4/P-Link.mp4'
-// See test-videos.md for more videos to use
-
-let ipfs
-let gateway
 const train = choo()
 
 daemonFactory.spawn({disposable: true}, async (err, ipfsd) => {

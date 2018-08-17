@@ -12,7 +12,7 @@
     "url": "git+https://github.com/viddist/viddist.git"
   },
   "keywords": [
-    "ipfs"
+    "dat"
   ],
   "author": "Jacob Karlsson <jacob.karlsson95@gmail.com> (https://jacob-karlsson.com)",
   "license": "GPL-3.0",
@@ -21,12 +21,9 @@
   },
   "homepage": "https://github.com/viddist/viddist#readme",
   "dependencies": {
-    "choo": "^6.12.1",
-    "go-ipfs-dep": "0.4.17",
-    "ipfsd-ctl": "^0.39.0"
+    "choo": "^6.12.1"
   },
   "devDependencies": {
-    "electron": "^2.0.2",
     "eslint": "^5.2.0",
     "standard": "^11.0.1"
   },
