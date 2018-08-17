@@ -99,19 +99,3 @@ profile._createEmpty = async () => {
     throw error
   }
 }
-
-// Not recommended to await this function, name publishing is super slow
-profile._publish = async () => {
-  try {
-    // According to irc (and indications from tests), the mfs root is always
-    // recursively pinned
-    const hash = (await ipfs.files.stat('/viddist-profile/',
-      { hash: true })).hash
-    await ipfs.name.publish(hash, {key: userAddressKeyName})
-    // TODO: Put this info in the ui
-    console.log('Published profile')
-  } catch (error) {
-    console.error('Failed to publish profile:', error)
-    throw error
-  }
-}

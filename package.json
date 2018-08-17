@@ -2,9 +2,10 @@
   "name": "viddist",
   "version": "1.0.0",
   "description": "A distributed alternative to YouTube and Popcorn Time",
-  "main": "src/app.js",
+  "main": "src/index.js",
   "scripts": {
     "start": "electron .",
+    "build": "date && browserify -t browserify-nodent -t [ sheetify -u sheetify-cssnext ] -p [ css-extract -o dist/bundle.css ] -p common-shakeify -p browser-pack-flat/plugin src/index.js -g uglifyify > dist/bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,8 +25,16 @@
     "choo": "^6.12.1"
   },
   "devDependencies": {
+    "browser-pack-flat": "^3.1.0",
+    "browserify": "^16.2.2",
+    "browserify-nodent": "^1.0.22",
+    "common-shakeify": "^0.5.0",
+    "css-extract": "^1.3.0",
     "eslint": "^5.2.0",
-    "standard": "^11.0.1"
+    "sheetify": "^7.3.3",
+    "sheetify-cssnext": "^2.0.0",
+    "standard": "^11.0.1",
+    "uglifyify": "^5.0.1"
   },
   "eslintConfig": {
     "env": {
