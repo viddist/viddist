@@ -1,4 +1,5 @@
 node_modules/
 .eslintrc.json
 .vscode/
-dist/
+dist/*
+!dist/media

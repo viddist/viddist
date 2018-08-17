@@ -22,6 +22,7 @@ train.use(async (state, emitter) => {
 
   emitter.on('playNewVideo', async newVid => {
     state.videoAddress = newVid
+    console.log('playing new', newVid)
     emitter.emit('render')
   })
 

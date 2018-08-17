@@ -23,7 +23,7 @@ module.exports = (state, emit) => {
   return html`
     <div>
       <div id="header-logo">
-        <img src="./viddist-logo.png">
+        <img src="media/viddist-logo.png">
         <div id="logo">Viddist</div>
       </div>
       <div>Your user address: 
