@@ -24,9 +24,8 @@ e.initProfile = async function () {
 
     await dat.writeFile('/version.txt', profileVersion)
     await dat.writeFile('/username.txt', 'Unnamed user')
-
   } else {
     profile = await dat.load(myProfileUrl)
   }
-  return (await profile.getInfo()).title
+  return profile.url
 }

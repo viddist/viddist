@@ -5,19 +5,19 @@ const user = require('./user.js')
 module.exports = (state, emit) => {
   const viewProfile = e => {
     e.preventDefault()
-    const otherUserId = document.getElementById('other-user-address').value
-    emit('viewProfile', otherUserId)
+    const profileUrl = document.getElementById('other-user-url').value
+    emit('viewProfile', profileUrl)
   }
 
   const playNewVideo = e => {
     e.preventDefault()
     // Can we cleanly avoid getElementById here?
-    const newVid = document.getElementById('new-video-address').value
+    const newVid = document.getElementById('new-video-url').value
     emit('playNewVideo', newVid)
   }
 
   const pinCurrentVideo = () => {
-    emit('pinVideo', state.videoLink)
+    // emit('pinVideo', state.videoLink)
   }
 
   return html`
@@ -32,7 +32,7 @@ module.exports = (state, emit) => {
       <form onsubmit=${viewProfile}>
         <div>
           <label>User profile address</label>
-          <input id="other-user-address" type="text">
+          <input id="other-user-url" type="text">
           <button>View user</button>
         </div>
       </form>
@@ -40,7 +40,7 @@ module.exports = (state, emit) => {
       <form onsubmit=${playNewVideo}>
         <div>
           <label>Video address</label>
-          <input id="new-video-address" type="text">
+          <input id="new-video-url" type="text">
           <button>Play video</button>
         </div>
       </form>
