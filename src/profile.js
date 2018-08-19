@@ -24,6 +24,7 @@ e.initProfile = async function () {
 
     await dat.writeFile('/version.txt', profileVersion)
     await dat.writeFile('/username.txt', 'Unnamed user')
+    await dat.writeFile('/videoList.json', '[]')
   } else {
     profile = await dat.load(myProfileUrl)
   }

@@ -33,8 +33,10 @@ train.use(async (state, emitter) => {
 
   emitter.emit('playNewVideo', 'dat://16d7782cda79cf1c35245b317f101a2ad1ea9c9fba3a29a70f4502629b8efa4e/Sintel.mp4')
 
-  state.myProfileAddress = await initProfile()
-  emitter.emit('render')
+  initProfile().then(url => {
+    state.myProfileAddress = url
+    emitter.emit('render')
+  })
 })
 
 train.route('/', main)
