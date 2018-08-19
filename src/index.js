@@ -3,6 +3,7 @@ const choo = require('choo')
 
 const main = require('./templates/main.js')
 // const profile = require('./my-profile.js')
+const { initProfile } = require('./profile.js')
 
 const css = require('sheetify')
 css('./index.css')
@@ -15,7 +16,8 @@ train.use(async (state, emitter) => {
   state.videoLink = ''
   state.videoAddress = ''
 
-  // state.myProfileAddress = await profile.init()
+  console.log('here2')
+  state.myProfileAddress = await initProfile()
   emitter.emit('render')
 
   // emitter.on('viewProfile', async userId => {
