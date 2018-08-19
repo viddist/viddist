@@ -16,7 +16,6 @@ train.use(async (state, emitter) => {
   state.videoLink = ''
   state.videoAddress = ''
 
-  console.log('here2')
   state.myProfileAddress = await initProfile()
   emitter.emit('render')
 
