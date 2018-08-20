@@ -3,7 +3,7 @@ const choo = require('choo')
 
 const main = require('./templates/main.js')
 // const profile = require('./my-profile.js')
-const { initProfile } = require('./profile.js')
+const { initProfile, readProfile } = require('./profile.js')
 
 const css = require('sheetify')
 css('./index.css')
@@ -15,10 +15,11 @@ train.use(async (state, emitter) => {
   state.otherUserProfile = null
   state.videoAddress = ''
 
-  // emitter.on('viewProfile', async userId => {
-  //   state.otherUserProfile = await profile.getUser(userId)
-  //   emitter.emit('render')
-  // })
+  emitter.on('viewProfile', async userUrl => {
+    console.log('caught viewprofile')
+    state.otherUserProfile = await readProfile(userUrl)
+    emitter.emit('render')
+  })
 
   emitter.on('playNewVideo', async newVid => {
     state.videoAddress = newVid

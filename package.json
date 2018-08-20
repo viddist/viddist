@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "electron .",
-    "build": "date && browserify -t browserify-nodent -t [ sheetify -u sheetify-cssnext ] -p [ css-extract -o dist/bundle.css ] -p common-shakeify -p browser-pack-flat/plugin src/index.js -g uglifyify > dist/bundle.js",
+    "build": "date && browserify -t browserify-nodent -t [ sheetify -u sheetify-cssnext ] -p [ css-extract -o dist/bundle.css ] -p common-shakeify -p browser-pack-flat/plugin src/index.js > dist/bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
