@@ -16,10 +16,6 @@ module.exports = (state, emit) => {
     emit('playNewVideo', newVid)
   }
 
-  const pinCurrentVideo = () => {
-    // emit('pinVideo', state.videoLink)
-  }
-
   return html`
     <div>
       <div id="header-logo">
@@ -36,6 +32,7 @@ module.exports = (state, emit) => {
           <button>View user</button>
         </div>
       </form>
+      <a href="#video/boop">linky</a>
       <div>${user(state.otherUserProfile)}</div>
       <form onsubmit=${playNewVideo}>
         <div>
@@ -44,11 +41,6 @@ module.exports = (state, emit) => {
           <button>Play video</button>
         </div>
       </form>
-      <button onclick=${pinCurrentVideo}>Pin this video</button>
-      <div>
-        <video controls autoplay muted src=${state.videoAddress}>
-        </video>
-      </div>
     </div>
   `
 }

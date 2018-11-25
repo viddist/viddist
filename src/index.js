@@ -2,6 +2,7 @@
 const choo = require('choo')
 
 const main = require('./templates/main.js')
+const videoPage = require('./templates/videoPage.js')
 // const profile = require('./my-profile.js')
 const { initProfile, readProfile } = require('./profile.js')
 
@@ -32,7 +33,7 @@ train.use(async (state, emitter) => {
   //  console.log('Pinned current video')
   // })
 
-  emitter.emit('playNewVideo', 'dat://16d7782cda79cf1c35245b317f101a2ad1ea9c9fba3a29a70f4502629b8efa4e/Sintel.mp4')
+  emitter.emit('playNewVideo', 'dat://00bb1eab0504c18e4758dabd11bcb5c46b1d150199a8bfe855c41f76fb5f9696/p2p-oresund-mathias-buus.mp4')
 
   initProfile().then(url => {
     state.myProfileAddress = url
@@ -41,4 +42,5 @@ train.use(async (state, emitter) => {
 })
 
 train.route('/', main)
+train.route('/video/:videoUrl', videoPage)
 train.mount('div')
