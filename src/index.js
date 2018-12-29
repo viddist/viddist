@@ -23,9 +23,10 @@ train.use(async (state, emitter) => {
   })
 
   emitter.on('playNewVideo', async newVid => {
-    state.videoAddress = newVid
+    //state.videoAddress = newVid
     console.log('playing new', newVid)
-    emitter.emit('render')
+    window.location = '/#video/' + encodeURIComponent(newVid)
+    //emitter.emit('render')
   })
 
   // emitter.on('pinVideo', async videoLink => {
@@ -33,7 +34,7 @@ train.use(async (state, emitter) => {
   //  console.log('Pinned current video')
   // })
 
-  emitter.emit('playNewVideo', 'dat://00bb1eab0504c18e4758dabd11bcb5c46b1d150199a8bfe855c41f76fb5f9696/p2p-oresund-mathias-buus.mp4')
+  //emitter.emit('playNewVideo', 'dat://00bb1eab0504c18e4758dabd11bcb5c46b1d150199a8bfe855c41f76fb5f9696/p2p-oresund-mathias-buus.mp4')
 
   initProfile().then(url => {
     state.myProfileAddress = url

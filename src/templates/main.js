@@ -32,7 +32,7 @@ module.exports = (state, emit) => {
           <button>View user</button>
         </div>
       </form>
-      <a href="#video/boop">linky</a>
+      <a href="#video/dat%3A%2F%2F00bb1eab0504c18e4758dabd11bcb5c46b1d150199a8bfe855c41f76fb5f9696%2Fp2p-oresund-mathias-buus.mp4">linky</a>
       <div>${user(state.otherUserProfile)}</div>
       <form onsubmit=${playNewVideo}>
         <div>
