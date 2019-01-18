@@ -4,7 +4,7 @@ const choo = require('choo')
 const main = require('./templates/main.js')
 const videoPage = require('./templates/videoPage.js')
 // const profile = require('./my-profile.js')
-const { initProfile, readProfile } = require('./profile.js')
+const { initProfile, readProfile, addVideoToProfile } = require('./profile.js')
 
 const css = require('sheetify')
 css('./index.css')
@@ -27,6 +27,11 @@ train.use(async (state, emitter) => {
     console.log('playing new', newVid)
     window.location = '/#video/' + encodeURIComponent(newVid)
     //emitter.emit('render')
+  })
+
+  emitter.on('addVidToProfile', async vidUrl => {
+    console.log('pinning video', vidUrl)
+    await addVideoToProfile(vidUrl)
   })
 
   // emitter.on('pinVideo', async videoLink => {

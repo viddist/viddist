@@ -52,3 +52,13 @@ e.readProfile = async function (url) {
     console.error('Reading user profile failed:', err)
   }
 }
+
+e.addVideoToProfile = async function (videoUrl) {
+  try {
+    const videos = JSON.parse(await myProfile.readFile('/videoList.json'))
+    videos.push(videoUrl)
+    await myProfile.writeFile('/videoList.json', JSON.stringify(videos))
+  } catch (err) {
+    console.error('Adding video to profile failed:', err)
+  }
+}

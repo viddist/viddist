@@ -9,6 +9,10 @@ module.exports = (state, emit) => {
     // emit('pinVideo', state.videoLink)
   }
 
+  const addVidToProfile = () => {
+    emit('addVidToProfile', state.params.videoUrl)
+  }
+
   return html`
 <div>
   <a href="/">home</a>
@@ -16,7 +20,7 @@ module.exports = (state, emit) => {
     Hello this is videoPage how can I be of service
     ${state.params.videoUrl}
   </div>
-  <button onclick=${pinCurrentVideo}>Pin this video</button>
+  <button onclick=${addVidToProfile}>Add video to profile</button>
   <div>
     <video controls autoplay muted src=${state.params.videoUrl}>
     </video>
