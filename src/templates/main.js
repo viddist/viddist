@@ -1,6 +1,6 @@
 const html = require('choo/html')
 
-const user = require('./user.js')
+const user = require('./playlistPage.js')
 
 module.exports = (state, emit) => {
   const viewProfile = e => {
