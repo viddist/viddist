@@ -1,12 +1,12 @@
 const html = require('choo/html')
 
-const videoItem = video => {
-  return html`
-    <li>${video}</li>
-  `
-}
+module.exports = (emit, user) => {
+  const videoItem = video => {
+    return html`
+      <li><button onclick="${() => emit('playNewVideo', video)}">${video}</button></li>
+    `
+  }
 
-module.exports = user => {
   console.log('rendering user')
   if (user === null) { return '' }
 
