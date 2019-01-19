@@ -1,6 +1,6 @@
 const html = require('choo/html')
 
-module.exports = (emit, user) => {
+module.exports = (state, emit) => {
   const videoItem = video => {
     return html`
       <li><button onclick="${() => emit('playNewVideo', video)}">${video}</button></li>
@@ -8,13 +8,23 @@ module.exports = (emit, user) => {
   }
 
   console.log('rendering user')
-  if (user === null) { return '' }
+
+  console.log('loaded playlist')
+
+  console.log('showloader', state.showLoader)
+  if (state.showLoader) {
+    emit('loadPlaylist', state.params.playlistUrl)
+    return html`<div>loading playlist</div>`
+  }
+
+  const playlist = state.playlistToView
 
   return html`
     <div>
-      <h3>${user.username}</h3>
+      <a href="/">home</a>
+      <h3>${playlist.username}</h3>
       <ul>
-      ${user.videoList.map(videoItem)}
+      ${playlist.videoList.map(videoItem)}
       </ul>
     </div>
   `

@@ -13,12 +13,21 @@ const train = choo()
 
 train.use(async (state, emitter) => {
   state.myProfileAddress = ''
-  state.otherUserProfile = null
+  state.playlistToView = null
+  state.showLoader = true
   state.videoAddress = ''
 
   emitter.on('viewProfile', async userUrl => {
     console.log('caught viewprofile')
-    state.otherUserProfile = await readProfile(userUrl)
+    state.showLoader = true
+    window.location = '/#playlist/' + encodeURIComponent(userUrl)
+  })
+
+  emitter.on('loadPlaylist', async playlistUrl => {
+    console.log('loading playlist', playlistUrl)
+    state.playlistToView = await readProfile(playlistUrl)
+    state.showLoader = false
+    console.log('rendering again')
     emitter.emit('render')
   })
 

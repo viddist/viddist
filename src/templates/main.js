@@ -1,7 +1,5 @@
 const html = require('choo/html')
 
-const user = require('./playlistPage.js')
-
 module.exports = (state, emit) => {
   const viewProfile = e => {
     e.preventDefault()
@@ -23,7 +21,10 @@ module.exports = (state, emit) => {
         <div id="logo">Viddist</div>
       </div>
       <div>Your user address: 
-        <div>${state.myProfileAddress}</div>
+        <div>
+          <button onclick="${() => emit('viewProfile', state.myProfileAddress)}">
+          ${state.myProfileAddress}</button>
+        </div>
       </div>
       <form onsubmit=${viewProfile}>
         <div>
@@ -33,7 +34,6 @@ module.exports = (state, emit) => {
         </div>
       </form>
       <a href="#video/dat%3A%2F%2F00bb1eab0504c18e4758dabd11bcb5c46b1d150199a8bfe855c41f76fb5f9696%2Fp2p-oresund-mathias-buus.mp4">linky</a>
-      <div>${user(emit, state.otherUserProfile)}</div>
       <form onsubmit=${playNewVideo}>
         <div>
           <label>Video address</label>
