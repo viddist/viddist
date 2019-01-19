@@ -2,8 +2,8 @@
 const choo = require('choo')
 
 const main = require('./templates/main.js')
+const playlistPage = require('./templates/playlistPage.js')
 const videoPage = require('./templates/videoPage.js')
-// const profile = require('./my-profile.js')
 const { initProfile, readProfile, addVideoToProfile } = require('./profile.js')
 
 const css = require('sheetify')
@@ -23,23 +23,14 @@ train.use(async (state, emitter) => {
   })
 
   emitter.on('playNewVideo', async newVid => {
-    //state.videoAddress = newVid
     console.log('playing new', newVid)
     window.location = '/#video/' + encodeURIComponent(newVid)
-    //emitter.emit('render')
   })
 
   emitter.on('addVidToProfile', async vidUrl => {
     console.log('pinning video', vidUrl)
     await addVideoToProfile(vidUrl)
   })
-
-  // emitter.on('pinVideo', async videoLink => {
-  //  await profile.pinVideo(videoLink)
-  //  console.log('Pinned current video')
-  // })
-
-  //emitter.emit('playNewVideo', 'dat://00bb1eab0504c18e4758dabd11bcb5c46b1d150199a8bfe855c41f76fb5f9696/p2p-oresund-mathias-buus.mp4')
 
   initProfile().then(url => {
     state.myProfileAddress = url
@@ -48,5 +39,6 @@ train.use(async (state, emitter) => {
 })
 
 train.route('/', main)
+train.route('/playlist/:playlistUrl', playlistPage)
 train.route('/video/:videoUrl', videoPage)
 train.mount('div')
