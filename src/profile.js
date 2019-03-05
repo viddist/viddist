@@ -2,8 +2,7 @@ const dat = window.DatArchive
 
 const e = module.exports = {}
 
-// TODO: Actually check this
-const profileVersion = 1
+const viddistVersion = 1
 
 let myProfile
 
@@ -12,10 +11,9 @@ e.initProfile = async function () {
     const myProfileUrl = window.localStorage.getItem('myProfile')
 
     if (myProfileUrl === null) {
-      // TODO: This breaks if the user selects an already init'ed profile
       myProfile = await dat.selectArchive(
-        { title: 'Create or select your Viddist profile',
-          buttonLabel: 'Select profile',
+        { title: 'Create or select a viddist playlist',
+          buttonLabel: 'Select playlist',
           filters: {
             isOwner: true,
             type: 'viddist-profile'
@@ -24,9 +22,21 @@ e.initProfile = async function () {
       )
       window.localStorage.setItem('myProfile', myProfile.url)
 
-      await myProfile.writeFile('/version.txt', profileVersion.toString())
-      await myProfile.writeFile('/username.txt', 'Unnamed user')
-      await myProfile.writeFile('/videoList.json', '[]')
+      const dir = await myProfile.readdir('/')
+
+      // Our way of checking if the playlist is already init'ed
+      if (dir.includes('version.txt')) {
+        const archiveVersion = parseInt(await myProfile.readFile('/version.txt'))
+
+        if (archiveVersion > viddistVersion) {
+          myProfile = null
+          throw 'This playlist was made using a newer version of viddist. Not opening it due to risk of breaking it.'
+        }
+      } else {
+        await myProfile.writeFile('/version.txt', viddistVersion.toString())
+        await myProfile.writeFile('/username.txt', 'Unnamed playlist')
+        await myProfile.writeFile('/videoList.json', '[]')
+      }
     } else {
       myProfile = await dat.load(myProfileUrl)
     }
