@@ -16,8 +16,7 @@ module.exports = (state, emit) => {
 <div>
   <a href="/">home</a>
   <div>
-    Hello this is videoPage how can I be of service
-    ${state.params.videoUrl}
+    Current video address <code>${state.params.videoUrl}</code>
   </div>
   <button onclick=${addVidToProfile}>Add video to profile</button>
   <div>
