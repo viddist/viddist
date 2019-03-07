@@ -72,3 +72,8 @@ e.addVideoToProfile = async function (videoUrl) {
     console.error('Adding video to profile failed:', err)
   }
 }
+
+e.videoIsInPlaylist = async function (videoUrl) {
+  const videos = JSON.parse(await myProfile.readFile('/videoList.json'))
+  return videos.includes(videoUrl)
+}

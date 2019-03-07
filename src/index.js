@@ -4,7 +4,7 @@ const choo = require('choo')
 const main = require('./templates/main.js')
 const playlistPage = require('./templates/playlistPage.js')
 const videoPage = require('./templates/videoPage.js')
-const { initProfile, readProfile, addVideoToProfile } = require('./profile.js')
+const { initProfile, readProfile, addVideoToProfile, videoIsInPlaylist } = require('./profile.js')
 
 const css = require('sheetify')
 css('./index.css')
@@ -33,7 +33,16 @@ train.use(async (state, emitter) => {
 
   emitter.on('playNewVideo', async newVid => {
     console.log('playing new', newVid)
+    state.showLoader = true
     window.location = '/#video/' + encodeURIComponent(newVid)
+  })
+
+  emitter.on('loadVideoInfo', async videoUrl => {
+    console.log('loading video info', videoUrl)
+    state.videoIsInPlaylist = await videoIsInPlaylist(videoUrl)
+    state.showLoader = false
+    console.log('rendering after loading info')
+    emitter.emit('render')
   })
 
   emitter.on('addVidToProfile', async vidUrl => {
