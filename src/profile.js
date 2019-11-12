@@ -73,6 +73,16 @@ e.addVideoToProfile = async function (videoUrl) {
   }
 }
 
+e.removeVideoFromPlaylist = async function (videoUrl) {
+  try {
+    const videos = JSON.parse(await myProfile.readFile('/videoList.json'))
+    const fewerVideos = videos.filter(vid => vid !== videoUrl)
+    await myProfile.writeFile('/videoList.json', JSON.stringify(fewerVideos))
+  } catch (err) {
+    console.error('Removing video from playlist failed:', err)
+  }
+}
+
 e.videoIsInPlaylist = async function (videoUrl) {
   const videos = JSON.parse(await myProfile.readFile('/videoList.json'))
   return videos.includes(videoUrl)

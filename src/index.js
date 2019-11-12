@@ -4,18 +4,21 @@ const choo = require('choo')
 const main = require('./templates/main.js')
 const playlistPage = require('./templates/playlistPage.js')
 const videoPage = require('./templates/videoPage.js')
-const { initProfile, readProfile, addVideoToProfile, videoIsInPlaylist } = require('./profile.js')
+const { initProfile, readProfile, addVideoToProfile, removeVideoFromPlaylist, videoIsInPlaylist } = require('./profile.js')
 
 const css = require('sheetify')
 css('./index.css')
 
 const train = choo()
 
+train.use(require('choo-devtools')())
+
 train.use(async (state, emitter) => {
   state.myProfileAddress = ''
   state.playlistToView = null
   state.showLoader = true
   state.videoAddress = ''
+  state.videoIsInPlaylist = null
 
   emitter.on('viewProfile', async userUrl => {
     console.log('caught viewprofile')
@@ -48,6 +51,10 @@ train.use(async (state, emitter) => {
   emitter.on('addVidToProfile', async vidUrl => {
     console.log('pinning video', vidUrl)
     await addVideoToProfile(vidUrl)
+  })
+
+  emitter.on('removeVideoFromPlaylist', async videoUrl => {
+    await removeVideoFromPlaylist(videoUrl)
   })
 
   initProfile().then(url => {

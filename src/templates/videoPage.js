@@ -12,11 +12,17 @@ module.exports = (state, emit) => {
     emit('addVidToProfile', state.params.videoUrl)
   }
 
+  const removeVideoFromPlaylist = () => {
+    emit('removeVideoFromPlaylist', state.params.videoUrl)
+  }
+
   console.log('showvideoloader', state.showLoader)
   if (state.showLoader) {
     emit('loadVideoInfo', state.params.videoUrl)
     return html`<div>loading video info</div>`
   }
+
+  console.log('videoisinplaylist', state.videoIsInPlaylist)
 
   return html`
 <div>
@@ -25,8 +31,8 @@ module.exports = (state, emit) => {
     Current video address <code>${state.params.videoUrl}</code>
   </div>
 ${ state.videoIsInPlaylist ?
-    '(button)video is already in playlist(/button)' :
-    `<button onclick=${addVidToProfile}>Add video to profile</button>`
+    html`<button onclick=${removeVideoFromPlaylist}>Remove video from playlist</button>` :
+    html`<button onclick=${addVidToProfile}>Add video to playlist</button>`
 }
   <div>
     <video controls autoplay muted src=${state.params.videoUrl}>
