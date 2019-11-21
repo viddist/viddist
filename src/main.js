@@ -1,5 +1,7 @@
 'use strict'
 import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Main from './views/Main'
 import Home from './views/Home'
 const choo = require('choo')
 
@@ -70,8 +72,17 @@ train.use(async (state, emitter) => {
 //train.route('/video/:videoUrl', videoPage)
 //train.mount('div')
 
+const router = new VueRouter({
+  routes: [
+    { path: '/', component: Home },
+  ]
+})
+
+Vue.use(VueRouter)
+
 new Vue({
   el: '#app',
-  render: h => h(Home)
+  router,
+  render: h => h(Main)
 })
 
