@@ -4,9 +4,7 @@
   "description": "A distributed alternative to YouTube and Popcorn Time",
   "main": "src/index.js",
   "scripts": {
-    "start": "electron .",
-    "build": "date && browserify -t browserify-nodent -t [ sheetify -u sheetify-cssnext ] -p [ css-extract -o dist/bundle.css ] -p common-shakeify -p browser-pack-flat/plugin src/index.js > dist/bundle.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "vue-cli-service build --watch"
   },
   "repository": {
     "type": "git",
@@ -22,9 +20,13 @@
   },
   "homepage": "https://github.com/viddist/viddist#readme",
   "dependencies": {
-    "choo": "^6.12.1"
+    "choo": "^6.12.1",
+    "eslint-plugin-vue": "^6.0.1",
+    "vue": "^2.6.10",
+    "vue-template-compiler": "^2.6.10"
   },
   "devDependencies": {
+    "@vue/cli-service": "^4.0.5",
     "browser-pack-flat": "^3.1.0",
     "browserify": "^16.2.2",
     "browserify-nodent": "^1.0.22",
@@ -43,7 +45,10 @@
       "es6": true,
       "node": true
     },
-    "extends": "eslint:recommended",
+    "extends": [
+      "eslint:recommended",
+      "plugin:vue/essential"
+    ],
     "parserOptions": {
       "ecmaVersion": 8,
       "sourceType": "module"

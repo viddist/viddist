@@ -1,4 +1,6 @@
 'use strict'
+import Vue from 'vue'
+import Home from './views/Home'
 const choo = require('choo')
 
 const main = require('./templates/main.js')
@@ -6,8 +8,8 @@ const playlistPage = require('./templates/playlistPage.js')
 const videoPage = require('./templates/videoPage.js')
 const { initProfile, readProfile, addVideoToProfile, removeVideoFromPlaylist, videoIsInPlaylist } = require('./profile.js')
 
-const css = require('sheetify')
-css('./index.css')
+// const css = require('sheetify')
+// css('./index.css')
 
 const train = choo()
 
@@ -63,7 +65,13 @@ train.use(async (state, emitter) => {
   })
 })
 
-train.route('/', main)
-train.route('/playlist/:playlistUrl', playlistPage)
-train.route('/video/:videoUrl', videoPage)
-train.mount('div')
+//train.route('/', main)
+//train.route('/playlist/:playlistUrl', playlistPage)
+//train.route('/video/:videoUrl', videoPage)
+//train.mount('div')
+
+new Vue({
+  el: '#app',
+  render: h => h(Home)
+})
+
