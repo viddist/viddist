@@ -6,6 +6,7 @@ import VueRouter from 'vue-router'
 import Main from './views/Main'
 import HomeView from './views/HomeView'
 import VideoView from './views/VideoView'
+import PlaylistView from './views/PlaylistView'
 
 const choo = require('choo')
 
@@ -91,6 +92,12 @@ const router = new VueRouter({
       path: '/video/:videoUrl',
       name: 'video',
       component: VideoView,
+      props: true,
+    },
+    {
+      path: '/playlist/:playlistUrl',
+      name: 'playlist',
+      component: PlaylistView,
       props: true,
     },
   ]

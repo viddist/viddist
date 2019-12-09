@@ -55,23 +55,29 @@ export default {
   methods: {
     ...mapActions([
       'selectMyPlaylist',
+      'loadMyPlaylist',
     ]),
     viewMyPlaylist () {
-      console.log('viewmyplaylist')
-      //this.$emit('viewProfile', state.myProfileAddress)
+      this.goToPlaylist(this.myPlaylistUrl)
     },
     viewOtherPlaylist () {
-      console.log('o', this.otherPlaylistInput)
-
-      //const viewProfile = e => {
-      //  e.preventDefault()
-      //  const profileUrl = document.getElementById('other-user-url').value
-      //  emit('viewProfile', profileUrl)
-      //}
+      this.goToPlaylist(this.otherPlaylistInput)
+    },
+    goToPlaylist (url) {
+      this.$router.push({
+        name: 'playlist',
+        params: { playlistUrl: url }
+      })
     },
     playNewVideo () {
-      this.$router.push({ name: 'video', params: { videoUrl: this.newVideoInput }})
+      this.$router.push({
+        name: 'video',
+        params: { videoUrl: this.newVideoInput }
+      })
     }
+  },
+  created () {
+    this.loadMyPlaylist()
   }
 }
 
