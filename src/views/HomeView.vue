@@ -52,14 +52,7 @@ export default {
       //}
     },
     playNewVideo () {
-      console.log('newVideo', this.newVideoInput)
-
-      //const playNewVideo = e => {
-      //  e.preventDefault()
-      //  // Can we cleanly avoid getElementById here?
-      //  const newVid = document.getElementById('new-video-url').value
-      //  emit('playNewVideo', newVid)
-      //}
+      this.$router.push({ name: 'video', params: { videoUrl: this.newVideoInput }})
     }
   }
 }

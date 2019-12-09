@@ -5,6 +5,8 @@ import mainStore from './store/'
 import VueRouter from 'vue-router'
 import Main from './views/Main'
 import HomeView from './views/HomeView'
+import VideoView from './views/VideoView'
+
 const choo = require('choo')
 
 const main = require('./templates/main.js')
@@ -81,7 +83,18 @@ const store = new Vuex.Store(mainStore)
 
 const router = new VueRouter({
   routes: [
-    { path: '/', component: HomeView },
+    {
+      path: '/',
+      name: 'home',
+      component: HomeView,
+      props: true,
+    },
+    {
+      path: '/video/:videoUrl',
+      name: 'video',
+      component: VideoView,
+      props: true,
+    },
   ]
 })
 
