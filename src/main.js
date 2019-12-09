@@ -9,9 +9,7 @@ import VideoView from './views/VideoView'
 
 const choo = require('choo')
 
-const main = require('./templates/main.js')
 const playlistPage = require('./templates/playlistPage.js')
-const videoPage = require('./templates/videoPage.js')
 const { initProfile, readProfile, addVideoToProfile, removeVideoFromPlaylist, videoIsInPlaylist } = require('./profile.js')
 
 // const css = require('sheetify')
