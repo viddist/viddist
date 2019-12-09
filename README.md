@@ -31,4 +31,4 @@ The repositories/documentation will never contain (directly, or indirectly throu
 
 ## License
 
-GPLv3
+AGPL-3.0-or-later
