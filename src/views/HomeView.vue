@@ -4,13 +4,21 @@
       <img src="media/viddist-logo.png">
       <div id="logo">Viddist</div>
     </div>
-    <div>Your user address: 
+    <div v-if="myPlaylistIsLoaded">Playlist being edited:
       <div>
         <button @click="viewMyPlaylist">
-          {{ myPlaylistAddress }}
+          {{ myPlaylistUrl }}
         </button>
       </div>
     </div>
+    <button @click="selectMyPlaylist">
+      <div v-if="myPlaylistIsLoaded">
+        Select another playlist to edit
+      </div>
+      <div v-else>
+        Click to select a playlist to edit
+      </div>
+    </button>
     <form @submit.prevent="viewOtherPlaylist">
       <div>
         <label>User profile address</label>
@@ -29,15 +37,25 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   data () {
     return {
-      myPlaylistAddress: 'abcd',
       otherPlaylistInput: '',
       newVideoInput: ''
     }
   },
+  computed: {
+    ...mapGetters([
+      'myPlaylistIsLoaded',
+      'myPlaylistUrl',
+    ]),
+  },
   methods: {
+    ...mapActions([
+      'selectMyPlaylist',
+    ]),
     viewMyPlaylist () {
       console.log('viewmyplaylist')
       //this.$emit('viewProfile', state.myProfileAddress)
