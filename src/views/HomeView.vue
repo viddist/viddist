@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <div id="header-logo">
+  <div class="wrapper">
+    <div class="header">
       <img src="media/viddist-logo.png">
-      <div id="logo">Viddist</div>
+      <div class="viddist-title">Viddist</div>
     </div>
     <div v-if="myPlaylistIsLoaded">Playlist being edited:
       <div>
@@ -78,4 +78,21 @@ export default {
 </script>
 
 <style scope>
+.wrapper {
+  max-width: 30rem;
+  margin: auto;
+}
+
+.header {
+    font-size: 32px;
+}
+
+.header img {
+    height: 1em;
+}
+
+.viddist-title {
+    display: inline-block;
+}
+
 </style>
