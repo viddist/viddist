@@ -5,10 +5,14 @@
       <div>
         Current video address <code>{{ videoUrl }}</code>
       </div>
-      <!--${ state.videoIsInPlaylist ?
-          html`<button onclick=${removeVideoFromPlaylist}>Remove video from playlist</button>` :
-          html`<button onclick=${addVidToProfile}>Add video to playlist</button>`
-      }-->
+      <div v-if="myPlaylistIsLoaded">
+        <button v-if="videoIsInPlaylist" @click="removeVideoFromPlaylist">
+          Remove this video from your playlist
+        </button>
+        <button v-else @click="addVideoToPlaylist">
+          Add this video to your playlist
+        </button>
+      </div>
       <!-- TODO: also add a button for (un)seeding a video using beaker -->
     </div>
     <div class="video-wrapper">
@@ -19,12 +23,23 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   props: {
     videoUrl: String,
   },
+  computed: {
+    ...mapGetters([
+      'myPlaylistIsLoaded',
+    ])
+  },
   methods: {
-    
+    ...mapActions([
+      'addVideoToPlaylist',
+      'removeVideoFromPlaylist',
+      'videoIsInPlaylist',
+    ])
   },
 }
 </script>

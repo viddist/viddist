@@ -14,7 +14,7 @@
 </template>
 
 <script>
-const dat = window.DatArchive
+import { readPlaylist } from '@/lib/playlists.js'
 
 export default {
   props: {
@@ -37,11 +37,12 @@ export default {
   watch: {
     playlistUrl: {
       immediate: true,
+      // does this work when it's our own playlist and we've edited it?
       async handler (url) {
-        const archive = await dat.load(url)
+        const playlist = await readPlaylist(url)
 
-        this.name = await archive.readFile('/name.txt')
-        this.videoList = JSON.parse(await archive.readFile('/videoList.json'))
+        this.name = playlist.name
+        this.videoList = playlist.videoList
       }
     },
   },

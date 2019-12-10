@@ -1,3 +1,5 @@
+import { readPlaylist } from '@/lib/playlists.js'
+
 const dat = window.DatArchive
 const viddistVersion = 1
 
@@ -79,5 +81,40 @@ export default {
         dispatch('checkAndSetMyPlaylist', myPlaylist)
       }
     },
+    async saveMyPlaylist ({ getters }, { listName, videoList }) {
+      // we call it `listName` because eslint/ts was complaining about just `name`
+      if (!listName) throw 'Missing playlist name'
+      if (!videoList) throw 'Missing playlist video list'
+
+
+      // TODO: write listName here as well
+      await getters.myPlaylist.writeFile(
+        '/videoList.json',
+        JSON.stringify(videoList, null, 4)
+      )
+    },
+    async addVideoToPlaylist ({ getters, dispatch }, videoUrl) {
+      const playlist = await readPlaylist(getters.myPlaylistUrl)
+
+      playlist.videoList.push(videoUrl)
+
+      await dispatch('saveMyPlaylist', playlist)
+    },
+    async removeVideoFromPlaylist ({ getters, dispatch }, videoUrl) {
+      const playlist = await readPlaylist(getters.myPlaylistUrl)
+
+      playlist.videoList = playlist.videoList.filter(vid => vid !== videoUrl)
+
+      console.log('removing from playlist')
+      await dispatch('saveMyPlaylist', playlist)
+    },
+    async videoIsInPlaylist ({ getters }, videoUrl) {
+      console.log('checking pl')
+      const playlist = await readPlaylist(getters.myPlaylistUrl)
+
+      console.log('returning if pl')
+
+      return playlist.videoList.includes(videoUrl)
+    }
   }
 }
